@@ -29,7 +29,9 @@ def get_settings() -> Settings:
         os.getenv("MODEL_PATH", str(BACKEND_DIR.parent / "models" / "cnn_best_model.keras"))
     ).expanduser()
     if not model_path.is_absolute():
-        model_path = (BACKEND_DIR / model_path).resolve()
+        backend_relative_path = (BACKEND_DIR / model_path).resolve()
+        repo_relative_path = (BACKEND_DIR.parent / model_path).resolve()
+        model_path = backend_relative_path if backend_relative_path.exists() else repo_relative_path
 
     class_names = tuple(
         name.strip()
