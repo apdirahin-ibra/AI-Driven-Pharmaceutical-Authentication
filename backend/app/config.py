@@ -9,6 +9,13 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 load_dotenv(BACKEND_DIR / ".env")
 
 
+def clean_env(name: str, default: str | None = None) -> str | None:
+    value = os.getenv(name, default)
+    if value is None:
+        return None
+    return value.strip().strip('"').strip("'").strip()
+
+
 @dataclass(frozen=True)
 class Settings:
     model_path: Path
@@ -26,7 +33,7 @@ class Settings:
 
 def get_settings() -> Settings:
     model_path = Path(
-        os.getenv("MODEL_PATH", str(BACKEND_DIR.parent / "models" / "cnn_best_model.keras"))
+        clean_env("MODEL_PATH", str(BACKEND_DIR.parent / "models" / "cnn_best_model.keras")) or ""
     ).expanduser()
     if not model_path.is_absolute():
         backend_relative_path = (BACKEND_DIR / model_path).resolve()
@@ -35,34 +42,34 @@ def get_settings() -> Settings:
 
     class_names = tuple(
         name.strip()
-        for name in os.getenv("MODEL_CLASS_NAMES", "Fake,Real").split(",")
+        for name in (clean_env("MODEL_CLASS_NAMES", "Fake,Real") or "Fake,Real").split(",")
         if name.strip()
     )
-    suspicious_threshold = float(os.getenv("SUSPICIOUS_THRESHOLD", "0.75"))
+    suspicious_threshold = float(clean_env("SUSPICIOUS_THRESHOLD", "0.75") or "0.75")
     if not 0 <= suspicious_threshold <= 1:
         raise ValueError("SUSPICIOUS_THRESHOLD must be between 0 and 1.")
-    max_upload_mb = int(os.getenv("MAX_UPLOAD_MB", "10"))
+    max_upload_mb = int(clean_env("MAX_UPLOAD_MB", "10") or "10")
     validator_api_key = (
-        os.getenv("IMAGE_VALIDATOR_API_KEY")
-        or os.getenv("REQUESTY_API_KEY")
-        or os.getenv("REQWESTY_AI_KEY")
+        clean_env("IMAGE_VALIDATOR_API_KEY")
+        or clean_env("REQUESTY_API_KEY")
+        or clean_env("REQWESTY_AI_KEY")
     )
-    validator_base_url = os.getenv(
+    validator_base_url = clean_env(
         "IMAGE_VALIDATOR_BASE_URL", "https://router.requesty.ai/v1"
     ).rstrip("/")
-    validator_model = os.getenv("IMAGE_VALIDATOR_MODEL", "openai/gpt-4o")
-    validator_timeout_seconds = float(os.getenv("IMAGE_VALIDATOR_TIMEOUT_SECONDS", "30"))
-    supabase_url = os.getenv("SUPABASE_URL")
+    validator_model = clean_env("IMAGE_VALIDATOR_MODEL", "openai/gpt-4o") or "openai/gpt-4o"
+    validator_timeout_seconds = float(clean_env("IMAGE_VALIDATOR_TIMEOUT_SECONDS", "30") or "30")
+    supabase_url = clean_env("SUPABASE_URL")
     supabase_service_role_key = (
-        os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-        or os.getenv("SUPABASE_KEY")
+        clean_env("SUPABASE_SERVICE_ROLE_KEY")
+        or clean_env("SUPABASE_KEY")
     )
     frontend_origins = tuple(
         origin.strip()
-        for origin in os.getenv(
+        for origin in (clean_env(
             "FRONTEND_ORIGINS",
             "http://localhost:5173,http://127.0.0.1:5173",
-        ).split(",")
+        ) or "").split(",")
         if origin.strip()
     )
     return Settings(

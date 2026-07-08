@@ -1,4 +1,7 @@
+import base64
+import json
 from contextlib import asynccontextmanager
+from urllib.parse import urlparse
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -80,6 +83,7 @@ async def dependency_diagnostics() -> dict:
     diagnostics: dict[str, dict | list[str] | str] = {
         "status": "ok",
         "frontend_origins": list(settings.frontend_origins),
+        "supabase_config": safe_supabase_config_summary(),
         "model": {
             "path": str(settings.model_path),
             "path_exists": settings.model_path.exists(),
@@ -99,6 +103,7 @@ async def dependency_diagnostics() -> dict:
             diagnostics["supabase_database"] = {
                 "ok": False,
                 "error_type": type(exc).__name__,
+                "message": str(exc),
             }
 
     if user_admin.is_configured:
@@ -109,10 +114,47 @@ async def dependency_diagnostics() -> dict:
             diagnostics["supabase_auth_admin"] = {
                 "ok": False,
                 "error_type": type(exc).__name__,
+                "message": str(exc),
             }
 
     diagnostics["status"] = "degraded" if failed else "ok"
     return diagnostics
+
+
+def safe_supabase_config_summary() -> dict:
+    parsed_url = urlparse(settings.supabase_url or "")
+    return {
+        "url_host": parsed_url.netloc or None,
+        "service_role_key": jwt_summary(settings.supabase_service_role_key),
+    }
+
+
+def jwt_summary(token: str | None) -> dict:
+    if not token:
+        return {"present": False}
+    summary: dict[str, bool | int | str | None] = {
+        "present": True,
+        "length": len(token),
+        "looks_like_jwt": token.count(".") == 2,
+    }
+    parts = token.split(".")
+    if len(parts) != 3:
+        return summary
+    try:
+        payload_segment = parts[1] + "=" * (-len(parts[1]) % 4)
+        payload = json.loads(base64.urlsafe_b64decode(payload_segment.encode("ascii")))
+    except (ValueError, TypeError):
+        summary["payload_readable"] = False
+        return summary
+    summary.update(
+        {
+            "payload_readable": True,
+            "role": payload.get("role"),
+            "issuer": payload.get("iss"),
+            "project_ref": payload.get("ref"),
+        }
+    )
+    return summary
 
 
 def validation_error(code: str, message: str, stage: str, retryable: bool, status_code: int) -> HTTPException:
