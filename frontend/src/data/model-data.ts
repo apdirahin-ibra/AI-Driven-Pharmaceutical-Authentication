@@ -4,7 +4,7 @@ import { modelFacts } from "@/lib/constants";
 export const modelPerformances: ModelPerformance[] = [
   {
     name: "Improved CNN",
-    category: "Custom Deep CNN",
+    category: "Improved CNN Architecture",
     accuracy: 93.54,
     purpose: "Medicine image classification",
     status: "Selected Model",

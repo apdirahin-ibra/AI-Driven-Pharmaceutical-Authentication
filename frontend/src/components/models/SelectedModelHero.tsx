@@ -39,7 +39,7 @@ export function SelectedModelHero() {
               <span className="gradient-text">{modelFacts.selectedModel}</span>
             </h2>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              Custom deep CNN delivering <strong className="text-foreground">the strongest overall accuracy</strong> and highest fake-medicine recall among all evaluated architectures.
+              Improved CNN delivering <strong className="text-foreground">the strongest overall accuracy</strong> and highest fake-medicine recall among all evaluated architectures.
             </p>
           </div>
 

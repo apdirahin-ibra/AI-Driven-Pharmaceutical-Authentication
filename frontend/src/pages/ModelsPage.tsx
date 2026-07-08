@@ -85,7 +85,7 @@ export function ModelsPage() {
                 <DetailMetric label="Purpose" value={selectedModel.purpose} className="sm:col-span-2" />
                 <DetailMetric
                   label="Training Approach"
-                  value={selectedModel.name === "Improved CNN" ? "Custom trained CNN" : "Transfer learning benchmark"}
+                  value={selectedModel.name === "Improved CNN" ? "Improved CNN training" : "Transfer learning benchmark"}
                 />
                 <DetailMetric label="Status" value={selectedModel.status} />
                 {selectedModel.name === "Improved CNN" && (
