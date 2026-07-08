@@ -93,7 +93,7 @@ class SupabaseUserAdmin:
         if not payload:
             raise SupabaseUserAdminError("No user changes were provided.")
 
-        data = self._request("PATCH", f"/auth/v1/admin/users/{user_id}", json=payload)
+        data = self._request("PUT", f"/auth/v1/admin/users/{user_id}", json=payload)
         return user_from_supabase(data)
 
     def delete_user(self, user_id: str) -> None:

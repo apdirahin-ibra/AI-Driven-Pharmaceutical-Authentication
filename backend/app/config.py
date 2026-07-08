@@ -72,7 +72,7 @@ def get_settings() -> Settings:
         or clean_secret_env("SUPABASE_KEY")
     )
     frontend_origins = tuple(
-        origin.strip()
+        origin.strip().rstrip("/")
         for origin in (clean_env(
             "FRONTEND_ORIGINS",
             "http://localhost:5173,http://127.0.0.1:5173",
