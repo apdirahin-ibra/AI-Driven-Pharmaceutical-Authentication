@@ -27,7 +27,7 @@ export function LoginPage() {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const email = String(form.get("email") || "");
+    const email = String(form.get("email") || "").trim();
     const password = String(form.get("password") || "");
     if (!email || !password) {
       setError("Enter an email and password to continue.");
@@ -42,8 +42,9 @@ export function LoginPage() {
     try {
       await signIn(email, password);
       navigate("/app/dashboard");
-    } catch {
-      setError("Invalid email or password. Check the user exists in Supabase Auth.");
+    } catch (loginError) {
+      const message = loginError instanceof Error ? loginError.message : "";
+      setError(message || "Invalid email or password. Check the user exists in Supabase Auth.");
     } finally {
       setIsSubmitting(false);
     }
