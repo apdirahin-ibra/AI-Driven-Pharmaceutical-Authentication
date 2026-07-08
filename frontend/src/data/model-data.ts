@@ -3,20 +3,13 @@ import { modelFacts } from "@/lib/constants";
 
 export const modelPerformances: ModelPerformance[] = [
   {
-    name: "Improved CNN",
+    name: "CNN",
     category: "Custom Deep CNN",
     accuracy: 93.54,
     purpose: "Medicine image classification",
     status: "Selected Model",
     testLoss: modelFacts.testLoss,
     fakeRecall: 94,
-  },
-  {
-    name: "Custom CNN",
-    category: "Baseline CNN",
-    accuracy: 87.75,
-    purpose: "Baseline comparison",
-    status: "Evaluated",
   },
   {
     name: "ResNet50",

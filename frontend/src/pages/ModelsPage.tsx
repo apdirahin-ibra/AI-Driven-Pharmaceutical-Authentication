@@ -37,7 +37,7 @@ export function ModelsPage() {
               <div>
                 <h2 className="text-3xl font-black">{improved.name}</h2>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  The Improved CNN was selected because it achieved the strongest overall performance among the single deep learning models and provided high fake medicine recall.
+                  The CNN was selected because it achieved the strongest overall performance among the single deep learning models and provided high fake medicine recall.
                 </p>
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                   <ModelMetric label="Test Accuracy" value={formatPercent(modelFacts.testAccuracy)} />
@@ -116,9 +116,9 @@ export function ModelsPage() {
             <div className="grid gap-3 sm:grid-cols-2">
               <ModelMetric label="Architecture Type" value={selectedModel.category} />
               <ModelMetric label="Test Accuracy" value={`${selectedModel.accuracy.toFixed(2)}%`} />
-              <ModelMetric label="Training Approach" value={selectedModel.name === "Improved CNN" ? "Custom trained CNN" : "Evaluated comparison model"} />
+              <ModelMetric label="Training Approach" value={selectedModel.name === "CNN" ? "Custom trained CNN" : "Evaluated comparison model"} />
               <ModelMetric label="Status" value={selectedModel.status} />
-              {selectedModel.name === "Improved CNN" && (
+              {selectedModel.name === "CNN" && (
                 <>
                   <ModelMetric label="Test Loss" value={modelFacts.testLoss.toString()} />
                   <ModelMetric label="Input Size" value={modelFacts.inputSize} />

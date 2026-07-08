@@ -14,7 +14,7 @@
 **Focused Region Comparison**
 - Replaced the plain post-hero content with a polished visual workflow, premium benefits grid, simple process section, selected model highlight, Somali pharmacy mission section, and richer footer.
 - Preserved the existing hero layout, copy, sizing, and right-side authentication visual.
-- Kept project facts accurate: Improved CNN, 93.54% test accuracy, 94% fake recall, 75% suspicious threshold, and academic prototype framing.
+- Kept project facts accurate: CNN, 93.54% test accuracy, 94% fake recall, 75% suspicious threshold, and academic prototype framing.
 
 **Verification**
 - `npm run typecheck`: passed.

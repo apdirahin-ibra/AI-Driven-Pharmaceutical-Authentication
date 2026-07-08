@@ -12,7 +12,7 @@ export function ModelAccuracyChart() {
           <Tooltip formatter={(value) => [`${Number(value || 0).toFixed(2)}%`, "Test Accuracy"]} cursor={{ fill: "rgba(11,124,255,0.06)" }} />
           <Bar dataKey="accuracy" radius={[10, 10, 4, 4]}>
             {modelPerformances.map((model) => (
-              <Cell key={model.name} fill={model.name === "Improved CNN" ? "#0b7cff" : "#dbe7f4"} />
+              <Cell key={model.name} fill={model.name === "CNN" ? "#0b7cff" : "#dbe7f4"} />
             ))}
           </Bar>
         </BarChart>
