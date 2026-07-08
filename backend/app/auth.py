@@ -12,7 +12,7 @@ from .config import Settings, get_settings
 
 
 security = HTTPBearer(auto_error=False)
-AUTH_TIMEOUT_SECONDS = 8
+AUTH_TIMEOUT_SECONDS = 30
 AUTH_CACHE_SECONDS = 60
 _auth_cache: dict[str, tuple[float, "AuthenticatedUser"]] = {}
 

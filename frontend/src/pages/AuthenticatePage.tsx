@@ -73,12 +73,21 @@ export function AuthenticatePage() {
       const prediction = await predictMedicineImage(file);
       const imageDataUrl =
         file.size <= MAX_STORED_PREVIEW_SIZE ? await fileToDataUrl(file).catch(() => undefined) : undefined;
-      const savedScan = await savePredictionScan(prediction, { fileName: file.name, imageDataUrl });
-
       await analysis.complete();
       setResult(prediction);
-      setSavedScanId(savedScan.id);
       setShowResult(true);
+      try {
+        const savedScan = await savePredictionScan(prediction, { fileName: file.name, imageDataUrl });
+        setSavedScanId(savedScan.id);
+      } catch (saveError) {
+        const saveApiError = toPredictionApiError(saveError);
+        setError({
+          ...saveApiError,
+          title: "Result generated, but not saved",
+          message: `${saveApiError.message} The AI result is shown below, but it was not saved to history.`,
+          variant: "warning",
+        });
+      }
     } catch (requestError) {
       const predictionError = toPredictionApiError(requestError);
       if (isUnsupportedImageError(predictionError)) {
@@ -86,18 +95,18 @@ export function AuthenticatePage() {
         try {
           const imageDataUrl =
             file.size <= MAX_STORED_PREVIEW_SIZE ? await fileToDataUrl(file).catch(() => undefined) : undefined;
-          const savedScan = await savePredictionScan(suspiciousPrediction, { fileName: file.name, imageDataUrl });
-
           await analysis.complete();
           setResult(suspiciousPrediction);
-          setSavedScanId(savedScan.id);
           setShowResult(true);
           setError(null);
+          const savedScan = await savePredictionScan(suspiciousPrediction, { fileName: file.name, imageDataUrl });
+          setSavedScanId(savedScan.id);
           return;
-        } catch {
+        } catch (saveError) {
+          const saveApiError = toPredictionApiError(saveError);
           setError({
             ...predictionError,
-            message: `${predictionError.message} The warning could not be saved to Suspicious Cases.`,
+            message: `${predictionError.message} The warning could not be saved to Suspicious Cases. ${saveApiError.message}`,
           });
         }
       } else {
@@ -168,9 +177,10 @@ export function AuthenticatePage() {
                 <PredictionResultCard result={result} onCreateReport={() => navigate("/app/reports")} />
                 <Alert>
                   <ShieldCheck className="h-4 w-4" />
-                  <AlertDescription>
-                    Scan {savedScanId} saved to history
-                    {result.prediction !== "Real" ? " and added to Suspicious Cases" : ""}.{" "}
+                <AlertDescription>
+                    {savedScanId
+                      ? `Scan ${savedScanId} saved to history${result.prediction !== "Real" ? " and added to Suspicious Cases" : ""}. `
+                      : "This result has not been saved to history yet. "}
                     <Link className="font-semibold text-primary" to="/app/history">
                       View scan history
                     </Link>

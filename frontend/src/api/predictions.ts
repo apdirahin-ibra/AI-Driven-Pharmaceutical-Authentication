@@ -2,6 +2,8 @@ import { AxiosError } from "axios";
 import { apiClient } from "@/api/client";
 import type { PredictionResponse } from "@/types/domain";
 
+const PREDICTION_TIMEOUT_MS = 120000;
+
 export interface PredictionApiError {
   title: string;
   message: string;
@@ -15,6 +17,7 @@ export async function predictMedicineImage(file: File): Promise<PredictionRespon
   formData.append("file", file);
   const response = await apiClient.post<PredictionResponse>("/predict", formData, {
     headers: { "Content-Type": "multipart/form-data" },
+    timeout: PREDICTION_TIMEOUT_MS,
   });
   return response.data;
 }
@@ -32,6 +35,15 @@ export function toPredictionApiError(error: unknown): PredictionApiError {
           code,
           retryable: Boolean(detail.retryable),
           variant: "destructive",
+        };
+      }
+      if (code?.startsWith("AUTH_") || code === "INVALID_AUTH_TOKEN") {
+        return {
+          title: "Session verification unavailable",
+          message,
+          code,
+          retryable: Boolean(detail.retryable),
+          variant: "warning",
         };
       }
       return {
