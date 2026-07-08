@@ -1,5 +1,5 @@
 export const modelFacts = {
-  selectedModel: "CNN",
+  selectedModel: "Improved CNN",
   modelFile: "cnn_best_model.keras",
   testAccuracy: 0.9354,
   testLoss: 0.1784,

@@ -103,7 +103,7 @@ export function LandingPage() {
                 </span>
                 <Metric value="93.54%" label="Test Accuracy" />
                 <span className="hidden h-14 w-px bg-border sm:block" />
-                <Metric value="CNN" label="Selected Model" />
+                <Metric value="Improved CNN" label="Selected Model" />
               </CardContent>
             </Card>
           </div>
@@ -130,7 +130,7 @@ export function LandingPage() {
               <CardContent className="grid gap-8 p-8 lg:grid-cols-[0.85fr_1.15fr_0.9fr] lg:p-10">
                 <div>
                   <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-primary">Model Highlight</p>
-                  <h2 className="mt-4 text-3xl font-black tracking-tight md:text-4xl">Selected Model: CNN</h2>
+                  <h2 className="mt-4 text-3xl font-black tracking-tight md:text-4xl">Selected Model: Improved CNN</h2>
                   <p className="mt-4 text-base leading-7 text-muted-foreground">
                     A convolutional neural network was selected for the PharmaGuard AI prototype based on its performance in identifying learned visual patterns in pharmaceutical package images.
                   </p>
@@ -151,7 +151,7 @@ export function LandingPage() {
                 <div className="grid content-center gap-4">
                   <MiniMetric value="93.54%" label="Test Accuracy" />
                   <MiniMetric value="94%" label="Fake Medicine Recall" />
-                  <MiniMetric value="CNN" label="Selected Model" />
+                  <MiniMetric value="Improved CNN" label="Selected Model" />
                 </div>
               </CardContent>
             </Card>
@@ -212,7 +212,7 @@ function HeroScanVisual() {
             <div className="mt-5 h-3 overflow-hidden rounded-full bg-green-100">
               <div className="h-full w-[93.54%] rounded-full bg-real" />
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">CNN test accuracy</p>
+            <p className="mt-2 text-xs text-muted-foreground">Improved CNN test accuracy</p>
           </CardContent>
         </Card>
         <div className="flex flex-col gap-3 px-8">

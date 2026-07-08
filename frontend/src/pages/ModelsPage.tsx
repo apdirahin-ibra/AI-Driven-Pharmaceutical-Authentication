@@ -1,20 +1,21 @@
 import { useState } from "react";
-import { Box, Brain, Database, ShieldCheck, Target } from "lucide-react";
+import { Activity, Brain, Crown, Layers, Sparkles, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { ConfusionMatrixPanel } from "@/components/models/ConfusionMatrixPanel";
+import { DatasetSplitPanel } from "@/components/models/DatasetSplitPanel";
 import { ModelAccuracyChart } from "@/components/models/ModelAccuracyChart";
+import { ModelComparisonTable } from "@/components/models/ModelComparisonTable";
+import { SelectedModelHero } from "@/components/models/SelectedModelHero";
 import { modelPerformances } from "@/data/model-data";
 import { modelFacts } from "@/lib/constants";
-import { formatNumber, formatPercent } from "@/lib/utils";
+import { formatPercent } from "@/lib/utils";
 import type { ModelPerformance } from "@/types/domain";
 
 export function ModelsPage() {
   const [selectedModel, setSelectedModel] = useState<ModelPerformance | null>(null);
-  const improved = modelPerformances[0];
+  const evaluatedCount = modelPerformances.filter((model) => model.status === "Evaluated").length;
 
   return (
     <div>
@@ -22,111 +23,90 @@ export function ModelsPage() {
         eyebrow="AI Models"
         title="AI Model Performance"
         description="Compare trained pharmaceutical image classification models and review the selected production model."
+        action={
+          <div className="flex flex-wrap gap-2">
+            <QuickStat icon={Sparkles} label="Production" value={modelFacts.selectedModel} tone="purple" />
+            <QuickStat icon={Layers} label="Evaluated" value={`${evaluatedCount} models`} tone="blue" />
+            <QuickStat icon={Activity} label="Accuracy" value={formatPercent(modelFacts.testAccuracy)} tone="green" />
+          </div>
+        }
       />
-      <div className="grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
-        <Card className="border-blue-300">
-          <CardHeader className="flex-row items-center justify-between">
-            <CardTitle>Selected Model</CardTitle>
-            <Badge variant="selected">Selected Model</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-6 md:grid-cols-[220px_1fr]">
-              <div className="blue-grid grid h-56 place-items-center rounded-[1.5rem] border border-blue-200 bg-blue-50">
-                <Box className="h-24 w-24 text-primary" />
-              </div>
-              <div>
-                <h2 className="text-3xl font-black">{improved.name}</h2>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  The CNN was selected because it achieved the strongest overall performance among the single deep learning models and provided high fake medicine recall.
-                </p>
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  <ModelMetric label="Test Accuracy" value={formatPercent(modelFacts.testAccuracy)} />
-                  <ModelMetric label="Fake Recall" value={formatPercent(modelFacts.fakeRecall, 0)} />
-                  <ModelMetric label="Test Loss" value={modelFacts.testLoss.toString()} />
-                  <ModelMetric label="Suspicious Threshold" value={formatPercent(modelFacts.suspiciousThreshold, 0)} />
-                  <ModelMetric label="Model File" value={modelFacts.modelFile} className="sm:col-span-2" />
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader><CardTitle>Accuracy Comparison</CardTitle></CardHeader>
-          <CardContent><ModelAccuracyChart /></CardContent>
-        </Card>
+
+      <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
+        <SelectedModelHero />
+        <ModelAccuracyChart />
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[1fr_0.78fr]">
-        <Card>
-          <CardHeader><CardTitle>Model Comparison</CardTitle></CardHeader>
-          <CardContent className="overflow-x-auto">
-            <Table>
-              <TableHeader><TableRow><TableHead>Model</TableHead><TableHead>Architecture</TableHead><TableHead>Accuracy</TableHead><TableHead>Purpose</TableHead><TableHead>Status</TableHead><TableHead /></TableRow></TableHeader>
-              <TableBody>
-                {modelPerformances.map((model) => (
-                  <TableRow key={model.name}>
-                    <TableCell className="font-semibold">{model.name}</TableCell>
-                    <TableCell>{model.category}</TableCell>
-                    <TableCell>{model.accuracy.toFixed(2)}%</TableCell>
-                    <TableCell>{model.purpose}</TableCell>
-                    <TableCell><Badge variant={model.status === "Selected Model" ? "selected" : "secondary"}>{model.status}</Badge></TableCell>
-                    <TableCell><Button variant="outline" size="sm" onClick={() => setSelectedModel(model)}>Details</Button></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader><CardTitle>Dataset Summary</CardTitle></CardHeader>
-          <CardContent className="grid gap-3">
-            <ModelMetric label="Total Images" value={formatNumber(modelFacts.dataset.total)} />
-            <ModelMetric label="Training" value={formatNumber(modelFacts.dataset.training)} />
-            <ModelMetric label="Validation" value={formatNumber(modelFacts.dataset.validation)} />
-            <ModelMetric label="Testing" value={formatNumber(modelFacts.dataset.testing)} />
-          </CardContent>
-        </Card>
+      <div className="mt-5 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+        <ModelComparisonTable onSelectModel={setSelectedModel} />
+        <DatasetSplitPanel />
       </div>
 
-      <Card className="mt-5">
-        <CardHeader><CardTitle>Confusion Matrix</CardTitle></CardHeader>
-        <CardContent className="overflow-x-auto">
-          <Table>
-            <TableHeader><TableRow><TableHead>Actual Class</TableHead><TableHead>Predicted Fake</TableHead><TableHead>Predicted Real</TableHead></TableRow></TableHeader>
-            <TableBody>
-              {modelFacts.confusionMatrix.map((row) => (
-                <TableRow key={row.actual}>
-                  <TableCell className="font-semibold">{row.actual}</TableCell>
-                  <TableCell>{row.predictedFake}</TableCell>
-                  <TableCell>{row.predictedReal}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <div className="mt-5">
+        <ConfusionMatrixPanel />
+      </div>
 
+      {/* Premium Model Detail Dialog */}
       <Dialog open={Boolean(selectedModel)} onOpenChange={(open) => !open && setSelectedModel(null)}>
         {selectedModel && (
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{selectedModel.name}</DialogTitle>
-              <DialogDescription>{selectedModel.category} for {selectedModel.purpose.toLowerCase()}.</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <ModelMetric label="Architecture Type" value={selectedModel.category} />
-              <ModelMetric label="Test Accuracy" value={`${selectedModel.accuracy.toFixed(2)}%`} />
-              <ModelMetric label="Training Approach" value={selectedModel.name === "CNN" ? "Custom trained CNN" : "Evaluated comparison model"} />
-              <ModelMetric label="Status" value={selectedModel.status} />
-              {selectedModel.name === "CNN" && (
-                <>
-                  <ModelMetric label="Test Loss" value={modelFacts.testLoss.toString()} />
-                  <ModelMetric label="Input Size" value={modelFacts.inputSize} />
-                  <ModelMetric label="Output Classes" value={modelFacts.outputClasses} />
-                  <ModelMetric label="Fake Metrics" value="Precision 89%, Recall 94%, F1-score 91%" />
-                  <ModelMetric label="Real Metrics" value="Precision 96%, Recall 93%, F1-score 95%" className="sm:col-span-2" />
-                </>
-              )}
+          <DialogContent className="glass-card-strong max-w-lg rounded-3xl border-0 p-0 overflow-hidden">
+            {/* Dialog header with gradient */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-indigo-50/50 to-violet-50/30 px-6 pt-6 pb-5">
+              <div className="neural-grid absolute inset-0 opacity-20" />
+              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[radial-gradient(circle,rgb(99_102_241_/0.12),transparent_70%)]" />
+              <DialogHeader className="relative">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <DialogTitle className="text-2xl font-black">
+                      <span className="gradient-text">{selectedModel.name}</span>
+                    </DialogTitle>
+                    <DialogDescription className="mt-1.5 flex items-center gap-2">
+                      <span className="inline-flex rounded-lg bg-white/80 px-2 py-0.5 text-xs font-semibold ring-1 ring-primary/10">
+                        {selectedModel.category}
+                      </span>
+                    </DialogDescription>
+                  </div>
+                  <Badge
+                    variant={selectedModel.status === "Selected Model" ? "selected" : "secondary"}
+                    className={selectedModel.status === "Selected Model" ? "gap-1 shadow-[0_0_12px_rgb(11_124_255_/0.15)]" : ""}
+                  >
+                    {selectedModel.status === "Selected Model" && <Crown className="h-3 w-3" />}
+                    {selectedModel.status}
+                  </Badge>
+                </div>
+              </DialogHeader>
+            </div>
+
+            {/* Dialog body */}
+            <div className="px-6 pb-6 pt-4">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <DetailMetric label="Architecture" value={selectedModel.category} />
+                <DetailMetric label="Test Accuracy" value={`${selectedModel.accuracy.toFixed(2)}%`} highlight />
+                <DetailMetric label="Purpose" value={selectedModel.purpose} className="sm:col-span-2" />
+                <DetailMetric
+                  label="Training Approach"
+                  value={selectedModel.name === "Improved CNN" ? "Custom trained CNN" : "Transfer learning benchmark"}
+                />
+                <DetailMetric label="Status" value={selectedModel.status} />
+                {selectedModel.name === "Improved CNN" && (
+                  <>
+                    <DetailMetric label="Test Loss" value={modelFacts.testLoss.toString()} />
+                    <DetailMetric label="Input Size" value={modelFacts.inputSize} />
+                    <DetailMetric label="Output Classes" value={modelFacts.outputClasses} />
+                    <DetailMetric label="Model File" value={modelFacts.modelFile} />
+                    <DetailMetric
+                      label="Fake Metrics"
+                      value={`Precision ${formatPercent(modelFacts.fakeMetrics.precision, 0)}, Recall ${formatPercent(modelFacts.fakeMetrics.recall, 0)}, F1 ${formatPercent(modelFacts.fakeMetrics.f1, 0)}`}
+                      className="sm:col-span-2"
+                    />
+                    <DetailMetric
+                      label="Real Metrics"
+                      value={`Precision ${formatPercent(modelFacts.realMetrics.precision, 0)}, Recall ${formatPercent(modelFacts.realMetrics.recall, 0)}, F1 ${formatPercent(modelFacts.realMetrics.f1, 0)}`}
+                      className="sm:col-span-2"
+                    />
+                  </>
+                )}
+              </div>
             </div>
           </DialogContent>
         )}
@@ -135,14 +115,57 @@ export function ModelsPage() {
   );
 }
 
-function ModelMetric({ label, value, className = "" }: { label: string; value: string; className?: string }) {
+function QuickStat({
+  icon: Icon,
+  label,
+  value,
+  tone,
+}: {
+  icon: typeof Brain;
+  label: string;
+  value: string;
+  tone: "blue" | "green" | "purple";
+}) {
+  const toneStyles = {
+    blue: "border-blue-100/80 bg-gradient-to-r from-white to-blue-50/80 hover:shadow-[0_0_16px_rgb(11_124_255_/0.1)] text-primary",
+    green: "border-emerald-100/80 bg-gradient-to-r from-white to-emerald-50/80 hover:shadow-[0_0_16px_rgb(34_197_94_/0.1)] text-emerald-600",
+    purple: "border-violet-100/80 bg-gradient-to-r from-white to-violet-50/80 hover:shadow-[0_0_16px_rgb(139_92_246_/0.1)] text-violet-600",
+  };
+
   return (
-    <div className={`rounded-2xl border border-border bg-muted/60 p-4 ${className}`}>
-      <p className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wide text-muted-foreground">
-        {label === "Fake Recall" ? <ShieldCheck className="h-4 w-4" /> : label === "Test Accuracy" ? <Target className="h-4 w-4" /> : label.includes("Images") || label === "Training" || label === "Validation" || label === "Testing" ? <Database className="h-4 w-4" /> : <Brain className="h-4 w-4" />}
-        {label}
-      </p>
-      <strong className="mt-2 block text-lg">{value}</strong>
+    <div className={`hover-lift flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-sm transition-all duration-300 ${toneStyles[tone]}`}>
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-white shadow-sm ring-1 ring-current/10">
+        <Icon className="h-4 w-4" />
+      </span>
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">{label}</p>
+        <strong className="text-sm font-black text-foreground">{value}</strong>
+      </div>
+    </div>
+  );
+}
+
+function DetailMetric({
+  label,
+  value,
+  highlight = false,
+  className = "",
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`rounded-2xl border p-4 transition-all duration-200 hover:shadow-sm ${
+        highlight
+          ? "border-primary/20 bg-gradient-to-br from-blue-50/80 to-indigo-50/40 shadow-[0_0_12px_rgb(11_124_255_/0.06)]"
+          : "border-border/60 bg-gradient-to-br from-muted/30 to-white"
+      } ${className}`}
+    >
+      <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">{label}</p>
+      <strong className={`mt-2 block text-sm font-black leading-6 ${highlight ? "gradient-text" : ""}`}>{value}</strong>
     </div>
   );
 }
