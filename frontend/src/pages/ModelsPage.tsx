@@ -32,12 +32,12 @@ export function ModelsPage() {
         }
       />
 
-      <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
         <SelectedModelHero />
         <ModelAccuracyChart />
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+      <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.22fr)_minmax(360px,0.78fr)]">
         <ModelComparisonTable onSelectModel={setSelectedModel} />
         <DatasetSplitPanel />
       </div>

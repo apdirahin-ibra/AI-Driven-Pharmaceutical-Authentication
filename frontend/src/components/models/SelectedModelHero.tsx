@@ -10,36 +10,37 @@ const dashOffset = circumference - (modelFacts.testAccuracy * circumference);
 
 export function SelectedModelHero() {
   return (
-    <Card className="glass-card-strong gradient-border relative overflow-hidden rounded-3xl animate-fade-in-up">
+    <Card className="relative overflow-hidden rounded-3xl border-0 bg-[linear-gradient(135deg,#123b8f_0%,#1d66f2_48%,#6d5df7_100%)] text-white shadow-[0_28px_80px_rgb(15_38_83_/0.22)] animate-fade-in-up">
       {/* Animated background elements */}
-      <div className="absolute inset-0 neural-grid opacity-30" />
-      <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgb(99_102_241_/0.12),transparent_70%)] animate-float-slow" />
-      <div className="absolute -left-12 bottom-0 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgb(11_124_255_/0.10),transparent_70%)] animate-float" />
+      <div className="absolute inset-0 neural-grid opacity-20" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_16%,rgb(255_255_255_/0.18),transparent_26rem),linear-gradient(180deg,transparent_0%,rgb(6_18_56_/0.16)_100%)]" />
+      <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgb(255_255_255_/0.14),transparent_70%)] animate-float-slow" />
+      <div className="absolute -left-12 bottom-0 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgb(34_211_238_/0.18),transparent_70%)] animate-float" />
 
       {/* Floating particles */}
-      <div className="absolute right-[15%] top-[20%] h-2 w-2 rounded-full bg-primary/30" style={{ animation: "particle-float 5s ease-in-out infinite" }} />
-      <div className="absolute right-[30%] top-[60%] h-1.5 w-1.5 rounded-full bg-indigo-400/25" style={{ animation: "particle-float 7s ease-in-out infinite 1s" }} />
-      <div className="absolute left-[25%] top-[15%] h-1 w-1 rounded-full bg-violet-400/30" style={{ animation: "particle-float 6s ease-in-out infinite 2s" }} />
+      <div className="absolute right-[15%] top-[20%] h-2 w-2 rounded-full bg-cyan-200/70" style={{ animation: "particle-float 5s ease-in-out infinite" }} />
+      <div className="absolute right-[30%] top-[60%] h-1.5 w-1.5 rounded-full bg-white/60" style={{ animation: "particle-float 7s ease-in-out infinite 1s" }} />
+      <div className="absolute left-[25%] top-[15%] h-1 w-1 rounded-full bg-violet-100/70" style={{ animation: "particle-float 6s ease-in-out infinite 2s" }} />
 
-      <CardContent className="relative p-6 md:p-8">
+      <CardContent className="relative p-6 md:p-7 xl:p-8">
         {/* Header with badge and title */}
         <div className="flex flex-wrap items-start justify-between gap-6">
           <div className="max-w-md">
-            <div className="inline-flex items-center gap-2">
-              <Badge variant="selected" className="gap-1.5 px-3 py-1.5 text-xs shadow-[0_0_16px_rgb(11_124_255_/0.2)]">
+            <div className="inline-flex flex-wrap items-center gap-2">
+              <Badge className="gap-1.5 rounded-full border border-white/25 bg-white/95 px-3 py-1.5 text-xs font-black text-primary shadow-[0_12px_28px_rgb(6_18_56_/0.14)]">
                 <Sparkles className="h-3 w-3" />
                 Production Model
               </Badge>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 ring-1 ring-emerald-200/60">
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-700 ring-1 ring-white/30">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Active
               </span>
             </div>
-            <h2 className="mt-4 text-3xl font-black tracking-tight md:text-4xl">
-              <span className="gradient-text">{modelFacts.selectedModel}</span>
+            <h2 className="mt-4 text-3xl font-black tracking-tight text-white drop-shadow-[0_2px_16px_rgb(6_18_56_/0.25)] md:text-4xl">
+              {modelFacts.selectedModel}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              Improved CNN delivering <strong className="text-foreground">the strongest overall accuracy</strong> and highest fake-medicine recall among all evaluated architectures.
+            <p className="mt-3 max-w-[34rem] text-sm font-medium leading-6 text-blue-50/90">
+              Improved CNN delivering <strong className="font-black text-white">the strongest overall accuracy</strong> and highest fake-medicine recall among all evaluated architectures.
             </p>
           </div>
 
@@ -54,7 +55,7 @@ export function SelectedModelHero() {
                   <stop offset="100%" stopColor="#6366f1" />
                 </linearGradient>
               </defs>
-              <circle cx="64" cy="64" r="54" fill="none" stroke="rgb(11 124 255 / 0.1)" strokeWidth="8" />
+              <circle cx="64" cy="64" r="54" fill="none" stroke="rgb(255 255 255 / 0.18)" strokeWidth="8" />
               <circle
                 cx="64" cy="64" r="54"
                 fill="none"
@@ -66,26 +67,26 @@ export function SelectedModelHero() {
                 transform="rotate(-90 64 64)"
                 style={{ "--circumference": circumference, "--dash-offset": dashOffset, animation: "counter-fill 1.8s cubic-bezier(0.4,0,0.2,1) both" } as React.CSSProperties}
               />
-              <text x="64" y="58" textAnchor="middle" className="fill-foreground text-xl font-black">{accuracyPercent}%</text>
-              <text x="64" y="76" textAnchor="middle" className="fill-muted-foreground text-[9px] font-bold uppercase tracking-[0.14em]">Accuracy</text>
+              <text x="64" y="58" textAnchor="middle" className="fill-white text-xl font-black">{accuracyPercent}%</text>
+              <text x="64" y="76" textAnchor="middle" className="fill-blue-50 text-[9px] font-bold uppercase tracking-[0.14em]">Accuracy</text>
             </svg>
           </div>
         </div>
 
         {/* Model visualization + Metrics grid */}
-        <div className="mt-8 grid gap-5 lg:grid-cols-[220px_1fr]">
+        <div className="mt-7 grid gap-4 lg:grid-cols-[210px_1fr] xl:grid-cols-[220px_1fr]">
           {/* Neural network icon panel */}
-          <div className="relative overflow-hidden rounded-[1.5rem] border border-blue-200/60 bg-gradient-to-br from-[#f0f7ff] via-[#eef6ff] to-[#e8f3ff] p-6">
-            <div className="neural-grid absolute inset-0 opacity-50" />
+          <div className="relative overflow-hidden rounded-[1.35rem] border border-white/20 bg-white/14 p-5 shadow-[inset_0_1px_0_rgb(255_255_255_/0.24)] backdrop-blur-md">
+            <div className="neural-grid absolute inset-0 opacity-25" />
             {/* Orbiting decoration */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="h-40 w-40 rounded-full animate-orbit opacity-30">
                 <div className="h-2.5 w-2.5 rounded-full bg-primary/40" />
               </div>
             </div>
-            <div className="relative grid h-full min-h-[180px] place-items-center">
+            <div className="relative grid h-full min-h-[168px] place-items-center">
               <div className="animate-float">
-                <div className="glow-blue grid h-28 w-28 place-items-center rounded-3xl bg-white/90 ring-1 ring-blue-100/80">
+                <div className="grid h-28 w-28 place-items-center rounded-3xl bg-white/95 shadow-[0_18px_45px_rgb(6_18_56_/0.22)] ring-1 ring-white/70">
                   <Brain className="h-14 w-14 text-primary drop-shadow-[0_0_8px_rgb(11_124_255_/0.3)]" />
                 </div>
               </div>
@@ -129,7 +130,7 @@ function HeroMetric({
   };
 
   return (
-    <div className={`hover-lift rounded-2xl border p-4 transition-all duration-300 ${toneStyles[tone]} ${className}`}>
+    <div className={`hover-lift min-h-[92px] rounded-2xl border p-4 shadow-[0_12px_30px_rgb(6_18_56_/0.08)] transition-all duration-300 ${toneStyles[tone]} ${className}`}>
       <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em]">
         <Icon className="h-4 w-4 shrink-0" />
         {label}

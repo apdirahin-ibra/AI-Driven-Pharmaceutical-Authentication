@@ -23,16 +23,16 @@ export function ConfusionMatrixPanel() {
   const maxCell = Math.max(fakeRow.predictedFake, fakeRow.predictedReal, realRow.predictedFake, realRow.predictedReal);
 
   return (
-    <Card className="glass-card-strong relative overflow-hidden rounded-3xl animate-fade-in-up stagger-5">
+    <Card className="glass-card-strong relative overflow-hidden rounded-3xl border-blue-100/80 animate-fade-in-up stagger-5">
       <div className="absolute inset-0 neural-grid opacity-10" />
-      <CardHeader className="relative flex-row items-start justify-between gap-3">
+      <CardHeader className="relative flex-row items-start justify-between gap-4 pb-3">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary/10 to-indigo-100/80 text-primary shadow-sm ring-1 ring-primary/10">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-primary/10 to-indigo-100/80 text-primary shadow-sm ring-1 ring-primary/10">
             <Grid3X3 className="h-5 w-5" />
           </span>
           <div>
-            <CardTitle className="text-lg">Confusion Matrix</CardTitle>
-            <p className="mt-0.5 text-xs text-muted-foreground">Test-set classification outcomes for the Improved CNN</p>
+            <CardTitle className="text-xl tracking-tight">Confusion Matrix</CardTitle>
+            <p className="mt-1 text-xs font-medium leading-5 text-muted-foreground">Test-set classification outcomes for the Improved CNN</p>
           </div>
         </div>
         {/* Accuracy badge */}
@@ -47,22 +47,22 @@ export function ConfusionMatrixPanel() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="relative">
+      <CardContent className="relative pt-2">
         <div className="overflow-x-auto">
-          <div className="mx-auto max-w-xl">
+          <div className="mx-auto min-w-[620px] max-w-4xl">
             {/* Column headers */}
-            <div className="grid grid-cols-[140px_1fr_1fr] gap-3 text-center">
+            <div className="grid grid-cols-[150px_1fr_1fr] gap-4 text-center">
               <div />
-              <div className="rounded-xl bg-gradient-to-br from-red-50 to-orange-50/80 px-3 py-2.5 ring-1 ring-red-100/40">
+              <div className="rounded-2xl bg-gradient-to-br from-red-50 to-orange-50/80 px-4 py-3 ring-1 ring-red-100/60 shadow-sm">
                 <p className="text-[11px] font-bold uppercase tracking-wide text-fake">Predicted Fake</p>
               </div>
-              <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-green-50/80 px-3 py-2.5 ring-1 ring-emerald-100/40">
+              <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50/80 px-4 py-3 ring-1 ring-emerald-100/60 shadow-sm">
                 <p className="text-[11px] font-bold uppercase tracking-wide text-real">Predicted Real</p>
               </div>
             </div>
 
             {/* Row: Actual Fake */}
-            <div className="mt-3 grid grid-cols-[140px_1fr_1fr] gap-3">
+            <div className="mt-4 grid grid-cols-[150px_1fr_1fr] gap-4">
               <div className="flex items-center justify-end pr-3">
                 <span className="rounded-lg bg-red-50 px-2.5 py-1.5 text-xs font-bold uppercase tracking-wide text-fake ring-1 ring-red-100/40">
                   Actual Fake
@@ -83,7 +83,7 @@ export function ConfusionMatrixPanel() {
             </div>
 
             {/* Row: Actual Real */}
-            <div className="mt-3 grid grid-cols-[140px_1fr_1fr] gap-3">
+            <div className="mt-4 grid grid-cols-[150px_1fr_1fr] gap-4">
               <div className="flex items-center justify-end pr-3">
                 <span className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-xs font-bold uppercase tracking-wide text-real ring-1 ring-emerald-100/40">
                   Actual Real
@@ -106,7 +106,7 @@ export function ConfusionMatrixPanel() {
         </div>
 
         {/* Legend */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-5 text-xs text-muted-foreground">
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-xs font-medium text-muted-foreground">
           <LegendDot gradient="from-primary/85 to-indigo-600/90" label="Correct predictions (high)" />
           <LegendDot gradient="from-primary/15 to-blue-100/60" label="Correct predictions (low)" />
           <LegendDot gradient="from-red-50 to-orange-50" label="Misclassifications" />
@@ -136,8 +136,8 @@ function MatrixCell({
   label: string;
 }) {
   return (
-    <div className={`hover-lift group/cell relative overflow-hidden rounded-2xl p-5 text-center transition-all duration-300 ${style}`}>
-      <strong className="block text-3xl font-black">{value}</strong>
+    <div className={`hover-lift group/cell relative min-h-[132px] overflow-hidden rounded-3xl p-6 text-center transition-all duration-300 ${style}`}>
+      <strong className="block text-4xl font-black">{value}</strong>
       <span className="mt-1 block text-[11px] font-semibold opacity-75">
         {((value / total) * 100).toFixed(1)}% of total
       </span>
@@ -166,8 +166,8 @@ function SummaryStat({ label, value, tone }: { label: string; value: number; ton
   };
 
   return (
-    <div className={`rounded-xl border p-3 text-center transition-all hover:shadow-sm ${toneMap[tone]}`}>
-      <strong className="block text-lg font-black">{value}</strong>
+    <div className={`rounded-2xl border p-4 text-center shadow-sm transition-all hover:shadow-md ${toneMap[tone]}`}>
+      <strong className="block text-xl font-black">{value}</strong>
       <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wider opacity-70">{label}</p>
     </div>
   );

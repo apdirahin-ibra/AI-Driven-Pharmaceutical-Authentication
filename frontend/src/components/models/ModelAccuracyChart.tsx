@@ -43,28 +43,28 @@ function CustomTooltip({
 
 export function ModelAccuracyChart() {
   return (
-    <Card className="glass-card-strong relative h-full overflow-hidden rounded-3xl animate-fade-in-up stagger-2">
-      <div className="absolute inset-0 neural-grid opacity-15" />
-      <CardHeader className="relative">
-        <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary/10 to-indigo-100/80 text-primary shadow-sm ring-1 ring-primary/10">
+    <Card className="glass-card-strong relative h-full overflow-hidden rounded-3xl border-blue-100/80 animate-fade-in-up stagger-2">
+      <div className="absolute inset-0 neural-grid opacity-10" />
+      <CardHeader className="relative flex-row items-start justify-between gap-4 pb-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-primary/10 to-indigo-100/80 text-primary shadow-sm ring-1 ring-primary/10">
             <BarChart3 className="h-5 w-5" />
           </span>
-          <div>
-            <CardTitle className="text-lg">Accuracy Comparison</CardTitle>
-            <p className="mt-0.5 text-xs text-muted-foreground">Test accuracy across all evaluated model architectures</p>
+          <div className="min-w-0">
+            <CardTitle className="text-xl tracking-tight">Accuracy Comparison</CardTitle>
+            <p className="mt-1 text-xs font-medium leading-5 text-muted-foreground">Test accuracy across all evaluated model architectures</p>
           </div>
         </div>
         {/* Top accuracy highlight badge */}
-        <div className="absolute right-6 top-6 rounded-xl bg-gradient-to-br from-emerald-50 to-green-50 px-3 py-1.5 ring-1 ring-emerald-200/60">
+        <div className="shrink-0 rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 px-4 py-2 ring-1 ring-emerald-200/70 shadow-sm">
           <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600">Top</span>
           <strong className="ml-1 text-sm font-black text-emerald-700">{topAccuracy.toFixed(1)}%</strong>
         </div>
       </CardHeader>
-      <CardContent className="relative">
-        <div className="h-[380px] w-full">
+      <CardContent className="relative pt-1">
+        <div className="h-[354px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 28, right: 8, left: -8, bottom: 12 }} barCategoryGap="18%">
+            <BarChart data={chartData} margin={{ top: 30, right: 14, left: 2, bottom: 14 }} barCategoryGap="18%">
               <defs>
                 <linearGradient id="selectedBarGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#6366f1" />
@@ -85,19 +85,20 @@ export function ModelAccuracyChart() {
                   </feMerge>
                 </filter>
               </defs>
-              <CartesianGrid strokeDasharray="4 4" stroke="#e2eefb" vertical={false} />
+              <CartesianGrid strokeDasharray="4 4" stroke="#dceafa" strokeOpacity={0.95} vertical={false} />
               <XAxis
                 dataKey="shortName"
-                tick={{ fontSize: 10, fill: "#334b75", fontWeight: 700 }}
+                tick={{ fontSize: 10, fill: "#243b63", fontWeight: 800 }}
                 interval={0}
-                angle={-15}
-                height={60}
+                angle={-12}
+                height={54}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
                 domain={[65, 100]}
-                tick={{ fontSize: 10, fill: "#607193", fontWeight: 500 }}
+                width={38}
+                tick={{ fontSize: 10, fill: "#64748b", fontWeight: 700 }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(value) => `${value}%`}

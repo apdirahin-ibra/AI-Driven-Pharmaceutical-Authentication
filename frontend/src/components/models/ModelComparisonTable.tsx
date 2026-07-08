@@ -38,102 +38,120 @@ export function ModelComparisonTable({ onSelectModel }: ModelComparisonTableProp
           {modelPerformances.length} models
         </Badge>
       </CardHeader>
-      <CardContent className="relative overflow-x-auto">
-        <table className="w-full min-w-[720px] border-separate border-spacing-y-2">
-          <thead>
-            <tr className="text-left text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-              <th className="px-3 pb-1">Rank</th>
-              <th className="px-3 pb-1">Model</th>
-              <th className="px-3 pb-1">Architecture</th>
-              <th className="px-3 pb-1">Accuracy</th>
-              <th className="px-3 pb-1">Purpose</th>
-              <th className="px-3 pb-1">Status</th>
-              <th className="px-3 pb-1" />
-            </tr>
-          </thead>
-          <tbody>
-            {modelPerformances.map((model, index) => {
-              const isSelected = model.status === "Selected Model";
-              const width = (model.accuracy / maxAccuracy) * 100;
-              const rankStyle = index < 3 ? rankGradients[index] : "bg-slate-100 text-slate-500";
+      <CardContent className="relative">
+        <div className="mb-2 hidden grid-cols-[54px_minmax(120px,1fr)_minmax(120px,0.95fr)_minmax(150px,1.05fr)_minmax(120px,0.9fr)_minmax(132px,0.72fr)] gap-3 px-4 text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground 2xl:grid">
+          <span>Rank</span>
+          <span>Model</span>
+          <span>Architecture</span>
+          <span>Accuracy</span>
+          <span>Purpose</span>
+          <span>Status</span>
+        </div>
 
-              return (
-                <tr
-                  key={model.name}
-                  className={`group rounded-2xl transition-all duration-300 ${
-                    isSelected
-                      ? "bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-transparent shadow-[0_0_24px_rgb(11_124_255_/0.06)]"
-                      : "bg-white/50 hover:bg-blue-50/50 hover:shadow-sm"
-                  }`}
-                >
-                  <td className="rounded-l-2xl px-3 py-3.5">
-                    <span className={`inline-grid h-8 w-8 place-items-center rounded-lg text-[11px] font-black ${rankStyle}`}>
-                      {index + 1}
-                    </span>
-                  </td>
-                  <td className="px-3 py-3.5">
-                    <p className="flex items-center gap-2 font-bold">
-                      {model.name}
-                      {isSelected && (
-                        <Crown className="h-4 w-4 text-amber-500 drop-shadow-[0_0_4px_rgb(245_158_11_/0.5)]" style={{ animation: "float 3s ease-in-out infinite" }} />
-                      )}
-                    </p>
-                  </td>
-                  <td className="px-3 py-3.5">
-                    <span className="inline-flex rounded-lg bg-slate-50 px-2 py-1 text-xs font-semibold text-muted-foreground ring-1 ring-slate-100">
-                      {model.category}
-                    </span>
-                  </td>
-                  <td className="px-3 py-3.5">
-                    <div className="min-w-[160px]">
-                      <div className="mb-1.5 flex items-center justify-between gap-2">
-                        <strong className={`text-sm ${isSelected ? "gradient-text" : "text-foreground"}`}>
-                          {model.accuracy.toFixed(2)}%
-                        </strong>
-                        {isSelected && (
-                          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-primary">
-                            Best
-                          </span>
-                        )}
-                      </div>
-                      <div className="h-2.5 overflow-hidden rounded-full bg-slate-100/80">
-                        <div
-                          className={`animate-progress-fill h-full rounded-full transition-all ${
-                            isSelected
-                              ? "bg-gradient-to-r from-primary via-indigo-500 to-violet-500 shadow-[0_0_8px_rgb(11_124_255_/0.3)]"
-                              : "bg-gradient-to-r from-blue-200 to-blue-300"
-                          }`}
-                          style={{ width: `${width}%` }}
-                        />
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3.5 text-sm text-muted-foreground">{model.purpose}</td>
-                  <td className="px-3 py-3.5">
-                    <Badge
-                      variant={isSelected ? "selected" : "secondary"}
-                      className={isSelected ? "shadow-[0_0_12px_rgb(11_124_255_/0.15)]" : ""}
-                    >
-                      {model.status}
-                    </Badge>
-                  </td>
-                  <td className="rounded-r-2xl px-3 py-3.5 text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1.5 rounded-xl border-blue-100 bg-white/80 transition-all duration-300 hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm"
-                      onClick={() => onSelectModel(model)}
-                    >
-                      Details
-                      <ArrowUpRight className="h-3.5 w-3.5" />
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className="space-y-3">
+          {modelPerformances.map((model, index) => (
+            <ModelRow key={model.name} model={model} index={index} onSelectModel={onSelectModel} />
+          ))}
+        </div>
       </CardContent>
     </Card>
+  );
+}
+
+function ModelRow({
+  model,
+  index,
+  onSelectModel,
+}: {
+  model: ModelPerformance;
+  index: number;
+  onSelectModel: (model: ModelPerformance) => void;
+}) {
+  const isSelected = model.status === "Selected Model";
+  const width = (model.accuracy / maxAccuracy) * 100;
+  const rankStyle = index < 3 ? rankGradients[index] : "bg-slate-100 text-slate-500";
+
+  return (
+    <div
+      className={`group rounded-2xl border p-4 shadow-sm transition-all duration-300 ${
+        isSelected
+          ? "border-primary/20 bg-gradient-to-r from-blue-50/95 via-indigo-50/70 to-white shadow-[0_16px_34px_rgb(11_124_255_/0.08)]"
+          : "border-blue-100/70 bg-white/78 hover:border-primary/20 hover:bg-blue-50/50 hover:shadow-[0_14px_32px_rgb(15_38_83_/0.08)]"
+      }`}
+    >
+      <div className="grid items-center gap-4 2xl:grid-cols-[54px_minmax(120px,1fr)_minmax(120px,0.95fr)_minmax(150px,1.05fr)_minmax(120px,0.9fr)_minmax(132px,0.72fr)]">
+        <div className="flex items-center justify-between gap-3 2xl:block">
+          <span className={`inline-grid h-8 w-8 place-items-center rounded-xl text-[11px] font-black ${rankStyle}`}>
+            {index + 1}
+          </span>
+          <Badge
+            variant={isSelected ? "selected" : "secondary"}
+            className={`2xl:hidden ${isSelected ? "shadow-[0_0_12px_rgb(11_124_255_/0.15)]" : ""}`}
+          >
+            {model.status}
+          </Badge>
+        </div>
+
+        <div className="min-w-0">
+          <p className="flex items-center gap-2 font-black leading-snug text-foreground">
+            <span className="truncate">{model.name}</span>
+            {isSelected && (
+              <Crown className="h-4 w-4 shrink-0 text-amber-500 drop-shadow-[0_0_4px_rgb(245_158_11_/0.5)]" style={{ animation: "float 3s ease-in-out infinite" }} />
+            )}
+          </p>
+          <p className="mt-1 text-xs font-medium text-muted-foreground 2xl:hidden">{model.purpose}</p>
+        </div>
+
+        <div>
+          <p className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-muted-foreground 2xl:hidden">Architecture</p>
+          <span className="inline-flex max-w-full rounded-xl bg-white/82 px-2.5 py-1.5 text-xs font-bold leading-tight text-slate-600 ring-1 ring-blue-100/70">
+            {model.category}
+          </span>
+        </div>
+
+        <div className="min-w-0">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <strong className={`text-sm font-black ${isSelected ? "gradient-text" : "text-foreground"}`}>
+              {model.accuracy.toFixed(2)}%
+            </strong>
+            {isSelected && (
+              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-primary">
+                Best
+              </span>
+            )}
+          </div>
+          <div className="h-2.5 overflow-hidden rounded-full bg-slate-100/90 shadow-inner">
+            <div
+              className={`animate-progress-fill h-full rounded-full transition-all ${
+                isSelected
+                  ? "bg-gradient-to-r from-primary via-indigo-500 to-violet-500 shadow-[0_0_10px_rgb(11_124_255_/0.28)]"
+                  : "bg-gradient-to-r from-blue-200 to-blue-300"
+              }`}
+              style={{ width: `${width}%` }}
+            />
+          </div>
+        </div>
+
+        <p className="hidden text-sm font-medium leading-5 text-muted-foreground 2xl:block">{model.purpose}</p>
+
+        <div className="flex items-center justify-between gap-3 2xl:justify-end">
+          <Badge
+            variant={isSelected ? "selected" : "secondary"}
+            className={`hidden 2xl:inline-flex ${isSelected ? "shadow-[0_0_12px_rgb(11_124_255_/0.15)]" : ""}`}
+          >
+            {model.status}
+          </Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-9 gap-1.5 rounded-xl border-blue-100 bg-white/90 px-3 font-bold transition-all duration-300 hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm"
+            onClick={() => onSelectModel(model)}
+          >
+            Details
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

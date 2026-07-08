@@ -40,22 +40,22 @@ export function DatasetSplitPanel() {
   const { total } = modelFacts.dataset;
 
   return (
-    <Card className="glass-card-strong relative overflow-hidden rounded-3xl animate-fade-in-up stagger-4">
+    <Card className="glass-card-strong relative overflow-hidden rounded-3xl border-blue-100/80 animate-fade-in-up stagger-4">
       <div className="absolute inset-0 neural-grid opacity-10" />
-      <CardHeader className="relative">
+      <CardHeader className="relative pb-3">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary/10 to-indigo-100/80 text-primary shadow-sm ring-1 ring-primary/10">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-primary/10 to-indigo-100/80 text-primary shadow-sm ring-1 ring-primary/10">
             <Database className="h-5 w-5" />
           </span>
           <div>
-            <CardTitle className="text-lg">Dataset Summary</CardTitle>
-            <p className="mt-0.5 text-xs text-muted-foreground">Pharmaceutical image splits used for training & evaluation</p>
+            <CardTitle className="text-xl tracking-tight">Dataset Summary</CardTitle>
+            <p className="mt-1 text-xs font-medium leading-5 text-muted-foreground">Pharmaceutical image splits used for training & evaluation</p>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="relative space-y-5">
+      <CardContent className="relative space-y-4">
         {/* Total images card */}
-        <div className="relative overflow-hidden rounded-2xl border border-blue-100/60 bg-gradient-to-br from-[#f8fbff] via-white to-[#f0f7ff] p-6">
+        <div className="relative overflow-hidden rounded-2xl border border-blue-100/70 bg-gradient-to-br from-[#fbfdff] via-white to-[#f1f7ff] p-6 shadow-[0_14px_34px_rgb(15_38_83_/0.06)]">
           <div className="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-[radial-gradient(circle,rgb(11_124_255_/0.08),transparent_70%)]" />
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -71,7 +71,7 @@ export function DatasetSplitPanel() {
           </div>
 
           {/* Animated split bar */}
-          <div className="mt-5 flex h-4 overflow-hidden rounded-full bg-slate-100/70 shadow-inner">
+          <div className="mt-5 flex h-4 overflow-hidden rounded-full bg-slate-100/80 shadow-inner ring-1 ring-white">
             {splits.map((split) => (
               <div
                 key={split.key}
@@ -100,18 +100,18 @@ export function DatasetSplitPanel() {
             return (
               <div
                 key={split.key}
-                className={`hover-lift rounded-2xl border bg-gradient-to-br ${split.bgLight} p-5 ring-1 ${split.ringColor} transition-all duration-300 ${split.glowColor}`}
+                className={`hover-lift rounded-2xl border border-white/80 bg-gradient-to-br ${split.bgLight} p-5 shadow-[0_12px_30px_rgb(15_38_83_/0.06)] ring-1 ${split.ringColor} transition-all duration-300 ${split.glowColor}`}
               >
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <span className={`grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br ${split.gradient} text-white shadow-sm`}>
                       <Icon className="h-4 w-4" />
                     </span>
-                    <p className="text-sm font-bold">{split.label}</p>
+                    <p className="text-sm font-black text-foreground">{split.label}</p>
                   </div>
                   <div className="text-right">
                     <strong className="text-lg font-black">{formatNumber(split.value)}</strong>
-                    <p className="text-[10px] font-semibold text-muted-foreground">{percent.toFixed(1)}%</p>
+                    <p className="text-[10px] font-bold text-muted-foreground">{percent.toFixed(1)}%</p>
                   </div>
                 </div>
                 <div className="h-2.5 overflow-hidden rounded-full bg-white/80 shadow-inner">
