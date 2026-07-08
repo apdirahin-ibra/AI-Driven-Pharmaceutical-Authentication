@@ -112,7 +112,7 @@ class SupabaseRecordStore:
             "confidence": request.prediction.confidence,
             "fake_score": request.prediction.scores.Fake,
             "real_score": request.prediction.scores.Real,
-            "model": "Input Validator" if rejected_upload else "Improved CNN",
+            "model": "Input Validator" if rejected_upload else "CNN",
             "pharmacist": pharmacist,
             "date_time": format_date_time(now),
             "review_status": "Unsupported image" if rejected_upload else review_status_for(request.prediction.prediction),

@@ -16,6 +16,13 @@ def clean_env(name: str, default: str | None = None) -> str | None:
     return value.strip().strip('"').strip("'").strip()
 
 
+def clean_secret_env(name: str) -> str | None:
+    value = clean_env(name)
+    if value is None:
+        return None
+    return "".join(value.split())
+
+
 @dataclass(frozen=True)
 class Settings:
     model_path: Path
@@ -50,9 +57,9 @@ def get_settings() -> Settings:
         raise ValueError("SUSPICIOUS_THRESHOLD must be between 0 and 1.")
     max_upload_mb = int(clean_env("MAX_UPLOAD_MB", "10") or "10")
     validator_api_key = (
-        clean_env("IMAGE_VALIDATOR_API_KEY")
-        or clean_env("REQUESTY_API_KEY")
-        or clean_env("REQWESTY_AI_KEY")
+        clean_secret_env("IMAGE_VALIDATOR_API_KEY")
+        or clean_secret_env("REQUESTY_API_KEY")
+        or clean_secret_env("REQWESTY_AI_KEY")
     )
     validator_base_url = clean_env(
         "IMAGE_VALIDATOR_BASE_URL", "https://router.requesty.ai/v1"
@@ -61,8 +68,8 @@ def get_settings() -> Settings:
     validator_timeout_seconds = float(clean_env("IMAGE_VALIDATOR_TIMEOUT_SECONDS", "30") or "30")
     supabase_url = clean_env("SUPABASE_URL")
     supabase_service_role_key = (
-        clean_env("SUPABASE_SERVICE_ROLE_KEY")
-        or clean_env("SUPABASE_KEY")
+        clean_secret_env("SUPABASE_SERVICE_ROLE_KEY")
+        or clean_secret_env("SUPABASE_KEY")
     )
     frontend_origins = tuple(
         origin.strip()

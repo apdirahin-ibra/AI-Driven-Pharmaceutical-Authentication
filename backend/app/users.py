@@ -151,7 +151,7 @@ class SupabaseUserAdmin:
                 if attempt < REQUEST_ATTEMPTS - 1:
                     sleep(0.75 * (attempt + 1))
         assert last_error is not None
-        raise SupabaseUserAdminError(f"Supabase Auth request failed: {last_error}") from last_error
+        raise SupabaseUserAdminError(f"Supabase Auth request failed: {type(last_error).__name__}") from last_error
 
 
 def user_from_supabase(row: dict) -> dict:
