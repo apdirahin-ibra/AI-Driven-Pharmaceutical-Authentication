@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+from time import sleep
 from datetime import datetime
 from secrets import token_hex
 from typing import Literal
@@ -12,6 +14,9 @@ PredictionStatus = Literal["Real", "Fake", "Suspicious"]
 ModelPrediction = Literal["Real", "Fake"]
 RiskStatus = Literal["Open", "Under Review", "Resolved"]
 REQUEST_TIMEOUT_SECONDS = 20
+REQUEST_ATTEMPTS = 3
+RETRYABLE_HTTP_STATUSES = {429, 500, 502, 503, 504}
+logger = logging.getLogger(__name__)
 SCAN_LIST_COLUMNS = (
     "id,medicine,image_label,result,model_prediction,confidence,fake_score,"
     "real_score,model,pharmacist,date_time,review_status,created_at"
@@ -86,6 +91,10 @@ class SupabaseRecordStore:
         )
         return [report_from_row(row) for row in rows]
 
+    def ping(self) -> dict:
+        rows = self._request("GET", "/scan_records", params={"select": "id", "limit": "1"})
+        return {"ok": True, "rows_sampled": len(rows)}
+
     def create_scan(self, request: NewScanRequest, pharmacist: str) -> dict:
         now = datetime.now()
         rejected_upload = (
@@ -156,22 +165,58 @@ class SupabaseRecordStore:
         if prefer_return:
             headers["Prefer"] = "return=representation"
 
-        try:
-            response = httpx.request(
-                method,
-                f"{self.supabase_url}/rest/v1{table_path}",
-                params=params,
-                json=json,
-                headers=headers,
-                timeout=REQUEST_TIMEOUT_SECONDS,
-            )
-            response.raise_for_status()
-        except httpx.HTTPError as exc:
-            raise SupabaseRecordsError(f"Supabase request failed: {exc}") from exc
+        response = self._send_request(method, table_path, params=params, json=json, headers=headers)
 
         if response.status_code == 204 or not response.content:
             return []
         return response.json()
+
+    def _send_request(
+        self,
+        method: str,
+        table_path: str,
+        *,
+        params: dict[str, str] | None,
+        json: dict | None,
+        headers: dict[str, str],
+    ) -> httpx.Response:
+        timeout = httpx.Timeout(REQUEST_TIMEOUT_SECONDS, connect=10)
+        last_error: httpx.HTTPError | None = None
+        for attempt in range(REQUEST_ATTEMPTS):
+            try:
+                response = httpx.request(
+                    method,
+                    f"{self.supabase_url}/rest/v1{table_path}",
+                    params=params,
+                    json=json,
+                    headers=headers,
+                    timeout=timeout,
+                )
+                if response.status_code in RETRYABLE_HTTP_STATUSES and attempt < REQUEST_ATTEMPTS - 1:
+                    logger.warning(
+                        "Supabase records request returned retryable status %s on attempt %s/%s.",
+                        response.status_code,
+                        attempt + 1,
+                        REQUEST_ATTEMPTS,
+                    )
+                    sleep(0.75 * (attempt + 1))
+                    continue
+                response.raise_for_status()
+                return response
+            except httpx.HTTPStatusError as exc:
+                raise SupabaseRecordsError(f"Supabase request failed with status {exc.response.status_code}.") from exc
+            except httpx.HTTPError as exc:
+                last_error = exc
+                logger.warning(
+                    "Supabase records request failed on attempt %s/%s: %s",
+                    attempt + 1,
+                    REQUEST_ATTEMPTS,
+                    type(exc).__name__,
+                )
+                if attempt < REQUEST_ATTEMPTS - 1:
+                    sleep(0.75 * (attempt + 1))
+        assert last_error is not None
+        raise SupabaseRecordsError(f"Supabase request failed: {last_error}") from last_error
 
 
 def create_record_id(prefix: str, date: datetime) -> str:

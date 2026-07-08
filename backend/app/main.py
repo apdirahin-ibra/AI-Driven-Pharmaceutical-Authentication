@@ -75,6 +75,46 @@ def health() -> dict:
     }
 
 
+@app.get("/diagnostics/dependencies")
+async def dependency_diagnostics() -> dict:
+    diagnostics: dict[str, dict | list[str] | str] = {
+        "status": "ok",
+        "frontend_origins": list(settings.frontend_origins),
+        "model": {
+            "path": str(settings.model_path),
+            "path_exists": settings.model_path.exists(),
+            "loaded": model_service._model is not None,
+        },
+        "image_validator": {"configured": image_validator.is_configured},
+        "supabase_database": {"configured": record_store.is_configured},
+        "supabase_auth_admin": {"configured": user_admin.is_configured},
+    }
+
+    failed = False
+    if record_store.is_configured:
+        try:
+            diagnostics["supabase_database"] = await run_in_threadpool(record_store.ping)
+        except Exception as exc:  # pragma: no cover - diagnostic endpoint
+            failed = True
+            diagnostics["supabase_database"] = {
+                "ok": False,
+                "error_type": type(exc).__name__,
+            }
+
+    if user_admin.is_configured:
+        try:
+            diagnostics["supabase_auth_admin"] = await run_in_threadpool(user_admin.ping)
+        except Exception as exc:  # pragma: no cover - diagnostic endpoint
+            failed = True
+            diagnostics["supabase_auth_admin"] = {
+                "ok": False,
+                "error_type": type(exc).__name__,
+            }
+
+    diagnostics["status"] = "degraded" if failed else "ok"
+    return diagnostics
+
+
 def validation_error(code: str, message: str, stage: str, retryable: bool, status_code: int) -> HTTPException:
     return HTTPException(
         status_code=status_code,
