@@ -49,10 +49,10 @@ export function LandingPage() {
     <div className="min-h-screen bg-background">
       <PublicHeader />
       <main>
-        <section id="home" className="relative scroll-mt-28 overflow-hidden border-b border-blue-100 bg-[linear-gradient(120deg,#ffffff_0%,#f7fbff_46%,#eef8ff_100%)] px-4 py-5 lg:px-8 lg:py-6">
+        <section id="home" className="relative flex items-center scroll-mt-28 overflow-hidden border-b border-blue-100 bg-[linear-gradient(120deg,#ffffff_0%,#f7fbff_46%,#eef8ff_100%)] px-4 py-5 lg:px-8 lg:py-6" style={{ minHeight: "calc(100vh - 5rem)" }}>
           <div className="absolute inset-0 blue-grid opacity-60" />
           <div className="absolute inset-y-0 right-0 w-[44%] bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(213,238,255,0.75))]" />
-          <div className="relative mx-auto grid max-w-[1440px] gap-5 lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="relative mx-auto grid w-full max-w-[1440px] gap-5 lg:grid-cols-[0.82fr_1.18fr]">
             <div className="pt-2 lg:pt-0">
               <h1 className="max-w-[480px] text-3xl font-black leading-[1.08] tracking-tight text-foreground md:text-4xl xl:text-[2.8rem]">
                 AI-Driven Pharmaceutical <span className="text-primary">Authentication</span> for Safer Medicine Verification
