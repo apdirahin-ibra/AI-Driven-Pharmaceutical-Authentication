@@ -22,23 +22,23 @@ export function PublicHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-white/92 backdrop-blur-xl">
-      <div className="mx-auto flex h-24 max-w-[1440px] items-center justify-between px-5 lg:px-10">
+      <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-4 lg:px-8">
         <Link to="/" aria-label="PharmaGuard AI home">
           <BrandMark />
         </Link>
-        <nav className="hidden items-center gap-12 text-lg font-medium text-foreground lg:flex">
+        <nav className="hidden items-center gap-10 text-base font-medium text-foreground lg:flex">
           {links.map((link) => (
-            <Link key={link.label} to={link.href} onClick={(event) => scrollToLandingSection(event, link.href)} className={`relative py-2 hover:text-primary ${link.label === "Home" ? "text-foreground after:absolute after:bottom-0 after:left-1/2 after:h-1 after:w-6 after:-translate-x-1/2 after:rounded-full after:bg-primary" : ""}`}>
+            <Link key={link.label} to={link.href} onClick={(event) => scrollToLandingSection(event, link.href)} className={`relative py-2 hover:text-primary ${link.label === "Home" ? "text-foreground after:absolute after:bottom-0 after:left-1/2 after:h-1 after:w-5 after:-translate-x-1/2 after:rounded-full after:bg-primary" : ""}`}>
               {link.label}
             </Link>
           ))}
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
-          <Button asChild variant="outline" size="lg">
+          <Button asChild variant="outline" size="default">
             <Link to="/login"><UserRound className="h-4 w-4" /> Sign In</Link>
           </Button>
-          <Button asChild size="lg">
-            <Link to="/login">Get Started <ArrowRight className="h-5 w-5" /></Link>
+          <Button asChild size="default">
+            <Link to="/login">Get Started <ArrowRight className="h-4 w-4" /></Link>
           </Button>
         </div>
         <Sheet>
@@ -51,11 +51,11 @@ export function PublicHeader() {
             <SheetHeader>
               <SheetTitle><BrandMark /></SheetTitle>
             </SheetHeader>
-            <nav className="mt-8 grid gap-3">
+            <nav className="mt-6 grid gap-2.5">
               {links.map((link) => (
-                <Link key={link.label} to={link.href} onClick={(event) => scrollToLandingSection(event, link.href)} className="rounded-xl px-3 py-3 font-semibold hover:bg-muted">{link.label}</Link>
+                <Link key={link.label} to={link.href} onClick={(event) => scrollToLandingSection(event, link.href)} className="rounded-xl px-3 py-2.5 font-semibold hover:bg-muted">{link.label}</Link>
               ))}
-              <Button asChild className="mt-4"><Link to="/login">Get Started</Link></Button>
+              <Button asChild className="mt-3"><Link to="/login">Get Started</Link></Button>
             </nav>
           </SheetContent>
         </Sheet>
