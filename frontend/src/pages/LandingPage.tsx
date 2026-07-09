@@ -49,18 +49,18 @@ export function LandingPage() {
     <div className="min-h-screen bg-background">
       <PublicHeader />
       <main>
-        <section id="home" className="relative scroll-mt-28 overflow-hidden border-b border-blue-100 bg-[linear-gradient(120deg,#ffffff_0%,#f7fbff_46%,#eef8ff_100%)] px-4 py-6 lg:px-8 lg:py-8">
+        <section id="home" className="relative scroll-mt-28 overflow-hidden border-b border-blue-100 bg-[linear-gradient(120deg,#ffffff_0%,#f7fbff_46%,#eef8ff_100%)] px-4 py-5 lg:px-8 lg:py-6">
           <div className="absolute inset-0 blue-grid opacity-60" />
           <div className="absolute inset-y-0 right-0 w-[44%] bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(213,238,255,0.75))]" />
           <div className="relative mx-auto grid max-w-[1440px] gap-5 lg:grid-cols-[0.82fr_1.18fr]">
-            <div className="pt-3 lg:pt-0">
+            <div className="pt-2 lg:pt-0">
               <h1 className="max-w-[480px] text-3xl font-black leading-[1.08] tracking-tight text-foreground md:text-4xl xl:text-[2.8rem]">
                 AI-Driven Pharmaceutical <span className="text-primary">Authentication</span> for Safer Medicine Verification
               </h1>
               <p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
                 Use artificial intelligence to analyze medicine package images and identify potential fake, real, or suspicious products.
               </p>
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                 <Button asChild size="default">
                   <Link to="/login"><ScanLine className="h-4 w-4" /> Start Authentication <ArrowRight className="h-4 w-4" /></Link>
                 </Button>
@@ -68,7 +68,7 @@ export function LandingPage() {
                   <Link to="/app/models"><Brain className="h-4 w-4" /> View AI Models</Link>
                 </Button>
               </div>
-              <div className="mt-6 grid max-w-2xl gap-4 sm:grid-cols-3">
+              <div className="mt-5 grid max-w-2xl gap-4 sm:grid-cols-3">
                 <HeroFeature Icon={Brain} title="AI-Powered" detail="Detection" />
                 <HeroFeature Icon={ShieldCheck} title="Advanced" detail="Verification" />
                 <HeroFeature Icon={BarChart3} title="Trusted by" detail="Pharmacies" />
@@ -182,53 +182,53 @@ export function LandingPage() {
 
 function HeroScanVisual() {
   return (
-    <div className="relative hidden min-h-[320px] lg:block">
-      <div className="absolute left-6 top-2 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.18em] text-primary">
-        <span className="h-px w-10 bg-primary/45" />
+    <div className="relative hidden min-h-[280px] lg:block">
+      <div className="absolute left-6 top-2 flex items-center gap-2.5 text-xs font-extrabold uppercase tracking-[0.18em] text-primary">
+        <span className="h-px w-8 bg-primary/45" />
         AI scan in progress
-        <span className="h-px w-10 bg-primary/45" />
+        <span className="h-px w-8 bg-primary/45" />
       </div>
-      <div className="scan-line absolute left-2 top-10 h-[260px] w-[450px] rounded-[1.75rem] border-2 border-sky-300/75 bg-white/35 p-5 shadow-[0_22px_68px_rgb(11_124_255_/0.12)]">
-        <div className="blue-grid absolute inset-4 rounded-[1.4rem] opacity-70" />
+      <div className="scan-line absolute left-2 top-8 h-[225px] w-[420px] rounded-[1.75rem] border-2 border-sky-300/75 bg-white/35 p-4 shadow-[0_22px_68px_rgb(11_124_255_/0.12)]">
+        <div className="blue-grid absolute inset-3 rounded-[1.4rem] opacity-70" />
         <img
           src={heroMedicineImage}
           alt="Amoxicillin medicine package being scanned"
-          className="relative z-10 mt-4 h-[185px] w-full object-contain drop-shadow-[0_24px_28px_rgb(11_31_74_/0.20)]"
+          className="relative z-10 mt-3 h-[160px] w-full object-contain drop-shadow-[0_20px_24px_rgb(11_31_74_/0.20)]"
         />
       </div>
-      <div className="absolute right-0 top-4 z-20 flex w-[235px] flex-col gap-2.5">
-        <Card className="w-full border-blue-100 bg-white/88 shadow-[0_20px_50px_rgb(11_31_74_/0.12)] backdrop-blur-xl">
-          <CardContent className="p-4">
+      <div className="absolute right-0 top-2 z-20 flex w-[210px] flex-col gap-2">
+        <Card className="w-full border-blue-100 bg-white/88 shadow-[0_18px_44px_rgb(11_31_74_/0.12)] backdrop-blur-xl">
+          <CardContent className="p-3">
             <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-muted-foreground">Authentication Status</p>
-            <div className="mt-4 flex items-center gap-3">
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-green-100 text-real">
-                <ShieldCheck className="h-7 w-7" />
+            <div className="mt-3 flex items-center gap-2.5">
+              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-green-100 text-real">
+                <ShieldCheck className="h-6 w-6" />
               </span>
               <div>
-                <strong className="block text-xl font-black text-real">Ready</strong>
+                <strong className="block text-lg font-black text-real">Ready</strong>
                 <span className="text-sm font-extrabold text-real">93.54%</span>
               </div>
             </div>
-            <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-green-100">
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-green-100">
               <div className="h-full w-[93.54%] rounded-full bg-real" />
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">Improved CNN test accuracy</p>
+            <p className="mt-1.5 text-xs text-muted-foreground">Improved CNN test accuracy</p>
           </CardContent>
         </Card>
-        <div className="flex flex-col gap-2 px-6">
+        <div className="flex flex-col gap-1.5 px-5">
           <HeroStep title="Package Detected" />
           <HeroStep title="AI Verification" />
           <HeroStep title="Authenticity Check" />
         </div>
         <Card className="w-full border-blue-200 bg-white/82 shadow-premium backdrop-blur-xl">
-          <CardContent className="flex items-center gap-3 p-3">
-            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-blue-50 text-primary">
-              <Star className="h-6 w-6" />
+          <CardContent className="flex items-center gap-2.5 p-3">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-blue-50 text-primary">
+              <Star className="h-5 w-5" />
             </span>
             <div>
               <strong className="block text-sm">Securing Medicines.</strong>
-              <span className="block text-sm text-muted-foreground">Protecting Communities.</span>
-              <span className="mt-1.5 block text-xs font-bold text-primary">Built for Somali Pharmacies</span>
+              <span className="block text-xs text-muted-foreground">Protecting Communities.</span>
+              <span className="mt-1 block text-xs font-bold text-primary">Built for Somali Pharmacies</span>
             </div>
           </CardContent>
         </Card>
