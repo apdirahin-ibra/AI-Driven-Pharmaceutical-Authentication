@@ -34,7 +34,7 @@ function CustomTooltip({
       </div>
       {isSelected && (
         <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-          ★ Best Model
+          Best Model
         </span>
       )}
     </div>
@@ -43,15 +43,15 @@ function CustomTooltip({
 
 export function ModelAccuracyChart() {
   return (
-    <Card className="glass-card-strong relative h-full overflow-hidden rounded-3xl border-blue-100/80 animate-fade-in-up stagger-2">
-      <div className="absolute inset-0 neural-grid opacity-10" />
-      <CardHeader className="relative flex-row items-start justify-between gap-4 pb-3">
+    <Card className="glass-card-strong relative h-full overflow-hidden rounded-[28px] border-blue-100/80 bg-white/92 animate-fade-in-up stagger-2">
+      <div className="absolute inset-0 neural-grid opacity-[0.06]" />
+      <CardHeader className="relative flex-row items-start justify-between gap-4 pb-4">
         <div className="flex min-w-0 items-center gap-3">
           <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-primary/10 to-indigo-100/80 text-primary shadow-sm ring-1 ring-primary/10">
             <BarChart3 className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <CardTitle className="text-xl tracking-tight">Accuracy Comparison</CardTitle>
+            <CardTitle className="text-xl font-black tracking-tight">Accuracy Comparison</CardTitle>
             <p className="mt-1 text-xs font-medium leading-5 text-muted-foreground">Test accuracy across all evaluated model architectures</p>
           </div>
         </div>
@@ -61,10 +61,10 @@ export function ModelAccuracyChart() {
           <strong className="ml-1 text-sm font-black text-emerald-700">{topAccuracy.toFixed(1)}%</strong>
         </div>
       </CardHeader>
-      <CardContent className="relative pt-1">
-        <div className="h-[354px] w-full">
+      <CardContent className="relative pt-0">
+        <div className="h-[392px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 30, right: 14, left: 2, bottom: 14 }} barCategoryGap="18%">
+            <BarChart data={chartData} margin={{ top: 34, right: 8, left: 0, bottom: 10 }} barCategoryGap="20%">
               <defs>
                 <linearGradient id="selectedBarGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#6366f1" />
@@ -85,18 +85,18 @@ export function ModelAccuracyChart() {
                   </feMerge>
                 </filter>
               </defs>
-              <CartesianGrid strokeDasharray="4 4" stroke="#dceafa" strokeOpacity={0.95} vertical={false} />
+              <CartesianGrid strokeDasharray="0" stroke="#e0eaf8" strokeOpacity={0.9} vertical={false} />
               <XAxis
                 dataKey="shortName"
                 tick={{ fontSize: 10, fill: "#243b63", fontWeight: 800 }}
                 interval={0}
-                angle={-12}
-                height={54}
+                angle={0}
+                height={52}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                domain={[65, 100]}
+                domain={[50, 100]}
                 width={38}
                 tick={{ fontSize: 10, fill: "#64748b", fontWeight: 700 }}
                 axisLine={false}
@@ -104,7 +104,7 @@ export function ModelAccuracyChart() {
                 tickFormatter={(value) => `${value}%`}
               />
               <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(11,124,255,0.04)", radius: 8 }} />
-              <Bar dataKey="accuracy" radius={[14, 14, 6, 6]} maxBarSize={52}>
+              <Bar dataKey="accuracy" radius={[14, 14, 2, 2]} maxBarSize={54}>
                 {chartData.map((model) => {
                   const isSelected = model.name === "Improved CNN";
                   return (

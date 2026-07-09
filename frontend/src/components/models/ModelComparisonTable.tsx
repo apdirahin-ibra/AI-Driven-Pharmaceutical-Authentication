@@ -1,6 +1,5 @@
-import { ArrowUpRight, Crown, Layers, Trophy } from "lucide-react";
+import { Crown, Layers, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { modelPerformances } from "@/data/model-data";
 import type { ModelPerformance } from "@/types/domain";
@@ -19,16 +18,16 @@ const rankGradients = [
 
 export function ModelComparisonTable({ onSelectModel }: ModelComparisonTableProps) {
   return (
-    <Card className="glass-card-strong relative overflow-hidden rounded-3xl animate-fade-in-up stagger-3">
-      <div className="absolute inset-0 neural-grid opacity-10" />
-      <CardHeader className="relative flex-row items-start justify-between gap-3">
+    <Card className="glass-card-strong relative overflow-hidden rounded-[28px] border-blue-100/80 bg-white/92 animate-fade-in-up stagger-3">
+      <div className="absolute inset-0 neural-grid opacity-[0.05]" />
+      <CardHeader className="relative flex-row items-start justify-between gap-3 pb-3">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-primary/10 to-indigo-100/80 text-primary shadow-sm ring-1 ring-primary/10">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-primary/10 to-indigo-100/80 text-primary shadow-sm ring-1 ring-primary/10">
             <Layers className="h-5 w-5" />
           </span>
           <div>
-            <CardTitle className="text-lg">Model Comparison</CardTitle>
-            <p className="mt-0.5 text-xs text-muted-foreground">
+            <CardTitle className="text-xl font-black tracking-tight">Model Comparison</CardTitle>
+            <p className="mt-1 text-xs font-medium leading-5 text-muted-foreground">
               Benchmark results across {modelPerformances.length} evaluated architectures
             </p>
           </div>
@@ -38,8 +37,8 @@ export function ModelComparisonTable({ onSelectModel }: ModelComparisonTableProp
           {modelPerformances.length} models
         </Badge>
       </CardHeader>
-      <CardContent className="relative">
-        <div className="mb-2 hidden grid-cols-[54px_minmax(120px,1fr)_minmax(120px,0.95fr)_minmax(150px,1.05fr)_minmax(120px,0.9fr)_minmax(132px,0.72fr)] gap-3 px-4 text-[10px] font-black uppercase tracking-[0.14em] text-muted-foreground 2xl:grid">
+      <CardContent className="relative pt-1">
+        <div className="mb-2 grid grid-cols-[44px_minmax(96px,1.05fr)_minmax(98px,0.95fr)_minmax(112px,1fr)_minmax(96px,0.9fr)_76px] gap-2 px-3 text-[10px] font-black uppercase tracking-[0.12em] text-muted-foreground">
           <span>Rank</span>
           <span>Model</span>
           <span>Architecture</span>
@@ -48,7 +47,7 @@ export function ModelComparisonTable({ onSelectModel }: ModelComparisonTableProp
           <span>Status</span>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           {modelPerformances.map((model, index) => (
             <ModelRow key={model.name} model={model} index={index} onSelectModel={onSelectModel} />
           ))}
@@ -73,38 +72,36 @@ function ModelRow({
 
   return (
     <div
-      className={`group rounded-2xl border p-4 shadow-sm transition-all duration-300 ${
+      onClick={() => onSelectModel(model)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") onSelectModel(model);
+      }}
+      className={`group cursor-pointer rounded-2xl border p-3 shadow-sm transition-all duration-300 ${
         isSelected
-          ? "border-primary/20 bg-gradient-to-r from-blue-50/95 via-indigo-50/70 to-white shadow-[0_16px_34px_rgb(11_124_255_/0.08)]"
-          : "border-blue-100/70 bg-white/78 hover:border-primary/20 hover:bg-blue-50/50 hover:shadow-[0_14px_32px_rgb(15_38_83_/0.08)]"
+          ? "border-primary/18 bg-gradient-to-r from-blue-50/95 via-indigo-50/60 to-white shadow-[0_12px_28px_rgb(11_124_255_/0.08)]"
+          : "border-blue-100/70 bg-white/82 hover:border-primary/20 hover:bg-blue-50/45 hover:shadow-[0_12px_28px_rgb(15_38_83_/0.08)]"
       }`}
     >
-      <div className="grid items-center gap-4 2xl:grid-cols-[54px_minmax(120px,1fr)_minmax(120px,0.95fr)_minmax(150px,1.05fr)_minmax(120px,0.9fr)_minmax(132px,0.72fr)]">
-        <div className="flex items-center justify-between gap-3 2xl:block">
-          <span className={`inline-grid h-8 w-8 place-items-center rounded-xl text-[11px] font-black ${rankStyle}`}>
+      <div className="grid grid-cols-[44px_minmax(96px,1.05fr)_minmax(98px,0.95fr)_minmax(112px,1fr)_minmax(96px,0.9fr)_76px] items-center gap-2">
+        <div>
+          <span className={`inline-grid h-8 w-8 place-items-center rounded-full text-[11px] font-black ${rankStyle}`}>
             {index + 1}
           </span>
-          <Badge
-            variant={isSelected ? "selected" : "secondary"}
-            className={`2xl:hidden ${isSelected ? "shadow-[0_0_12px_rgb(11_124_255_/0.15)]" : ""}`}
-          >
-            {model.status}
-          </Badge>
         </div>
 
         <div className="min-w-0">
-          <p className="flex items-center gap-2 font-black leading-snug text-foreground">
+          <p className="flex items-center gap-1.5 text-sm font-black leading-snug text-foreground">
             <span className="truncate">{model.name}</span>
             {isSelected && (
               <Crown className="h-4 w-4 shrink-0 text-amber-500 drop-shadow-[0_0_4px_rgb(245_158_11_/0.5)]" style={{ animation: "float 3s ease-in-out infinite" }} />
             )}
           </p>
-          <p className="mt-1 text-xs font-medium text-muted-foreground 2xl:hidden">{model.purpose}</p>
         </div>
 
         <div>
-          <p className="mb-1 text-[10px] font-black uppercase tracking-[0.12em] text-muted-foreground 2xl:hidden">Architecture</p>
-          <span className="inline-flex max-w-full rounded-xl bg-white/82 px-2.5 py-1.5 text-xs font-bold leading-tight text-slate-600 ring-1 ring-blue-100/70">
+          <span className="inline-flex max-w-full rounded-xl bg-white/90 px-2.5 py-1.5 text-[11px] font-bold leading-tight text-slate-600 ring-1 ring-blue-100/70">
             {model.category}
           </span>
         </div>
@@ -132,24 +129,15 @@ function ModelRow({
           </div>
         </div>
 
-        <p className="hidden text-sm font-medium leading-5 text-muted-foreground 2xl:block">{model.purpose}</p>
+        <p className="line-clamp-2 text-xs font-medium leading-4 text-muted-foreground">{model.purpose}</p>
 
-        <div className="flex items-center justify-between gap-3 2xl:justify-end">
+        <div className="flex justify-end">
           <Badge
             variant={isSelected ? "selected" : "secondary"}
-            className={`hidden 2xl:inline-flex ${isSelected ? "shadow-[0_0_12px_rgb(11_124_255_/0.15)]" : ""}`}
+            className={`px-2 py-1 text-[10px] ${isSelected ? "shadow-[0_0_12px_rgb(11_124_255_/0.15)]" : ""}`}
           >
             {model.status}
           </Badge>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-9 gap-1.5 rounded-xl border-blue-100 bg-white/90 px-3 font-bold transition-all duration-300 hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm"
-            onClick={() => onSelectModel(model)}
-          >
-            Details
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </Button>
         </div>
       </div>
     </div>

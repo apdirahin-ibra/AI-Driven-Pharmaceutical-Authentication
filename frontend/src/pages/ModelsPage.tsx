@@ -32,7 +32,7 @@ export function ModelsPage() {
         }
       />
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]">
         <SelectedModelHero />
         <ModelAccuracyChart />
       </div>
@@ -127,19 +127,19 @@ function QuickStat({
   tone: "blue" | "green" | "purple";
 }) {
   const toneStyles = {
-    blue: "border-blue-100/80 bg-gradient-to-r from-white to-blue-50/80 hover:shadow-[0_0_16px_rgb(11_124_255_/0.1)] text-primary",
-    green: "border-emerald-100/80 bg-gradient-to-r from-white to-emerald-50/80 hover:shadow-[0_0_16px_rgb(34_197_94_/0.1)] text-emerald-600",
-    purple: "border-violet-100/80 bg-gradient-to-r from-white to-violet-50/80 hover:shadow-[0_0_16px_rgb(139_92_246_/0.1)] text-violet-600",
+    blue: "border-blue-100/80 bg-white hover:shadow-[0_14px_34px_rgb(11_124_255_/0.10)] text-primary",
+    green: "border-emerald-100/80 bg-gradient-to-r from-white to-emerald-50/60 hover:shadow-[0_14px_34px_rgb(34_197_94_/0.10)] text-emerald-600",
+    purple: "border-violet-100/80 bg-gradient-to-r from-white to-violet-50/60 hover:shadow-[0_14px_34px_rgb(139_92_246_/0.10)] text-violet-600",
   };
 
   return (
-    <div className={`hover-lift flex items-center gap-3 rounded-2xl border px-4 py-3 shadow-sm transition-all duration-300 ${toneStyles[tone]}`}>
-      <span className="grid h-9 w-9 place-items-center rounded-xl bg-white shadow-sm ring-1 ring-current/10">
+    <div className={`hover-lift flex min-w-[152px] items-center gap-3 rounded-2xl border px-4 py-3.5 shadow-[0_10px_30px_rgb(15_38_83_/0.06)] transition-all duration-300 ${toneStyles[tone]}`}>
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-white shadow-sm ring-1 ring-current/10">
         <Icon className="h-4 w-4" />
       </span>
-      <div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">{label}</p>
-        <strong className="text-sm font-black text-foreground">{value}</strong>
+      <div className="min-w-0">
+        <p className="text-[10px] font-black uppercase leading-4 tracking-[0.16em] text-muted-foreground">{label}</p>
+        <strong className="block text-sm font-black leading-5 text-foreground">{value}</strong>
       </div>
     </div>
   );
