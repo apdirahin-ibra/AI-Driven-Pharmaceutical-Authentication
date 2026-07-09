@@ -78,8 +78,8 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section id="how-it-works" className="relative scroll-mt-28 overflow-hidden bg-white px-4 py-16 lg:px-8">
-          <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(223,241,255,0.55),rgba(255,255,255,0))]" />
+        <section id="how-it-works" className="relative scroll-mt-28 overflow-hidden bg-white px-4 py-14 lg:px-8">
+          <div className="absolute inset-x-0 top-0 h-20 bg-[linear-gradient(180deg,rgba(223,241,255,0.45),rgba(255,255,255,0))]" />
           <div className="absolute inset-0 blue-grid opacity-25" />
           <div className="relative mx-auto max-w-[1440px]">
             <SectionHeader
@@ -182,53 +182,53 @@ export function LandingPage() {
 
 function HeroScanVisual() {
   return (
-    <div className="relative hidden min-h-[280px] lg:block">
-      <div className="absolute left-6 top-2 flex items-center gap-2.5 text-xs font-extrabold uppercase tracking-[0.18em] text-primary">
-        <span className="h-px w-8 bg-primary/45" />
+    <div className="relative hidden min-h-[270px] lg:block">
+      <div className="absolute left-6 top-1.5 flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] text-primary">
+        <span className="h-px w-7 bg-primary/45" />
         AI scan in progress
-        <span className="h-px w-8 bg-primary/45" />
+        <span className="h-px w-7 bg-primary/45" />
       </div>
-      <div className="scan-line absolute left-2 top-8 h-[225px] w-[420px] rounded-[1.75rem] border-2 border-sky-300/75 bg-white/35 p-4 shadow-[0_22px_68px_rgb(11_124_255_/0.12)]">
+      <div className="scan-line absolute left-2 top-7 h-[210px] w-[400px] rounded-[1.75rem] border-2 border-sky-300/75 bg-white/35 p-4 shadow-[0_20px_60px_rgb(11_124_255_/0.12)]">
         <div className="blue-grid absolute inset-3 rounded-[1.4rem] opacity-70" />
         <img
           src={heroMedicineImage}
           alt="Amoxicillin medicine package being scanned"
-          className="relative z-10 mt-3 h-[160px] w-full object-contain drop-shadow-[0_20px_24px_rgb(11_31_74_/0.20)]"
+          className="relative z-10 mt-2.5 h-[150px] w-full object-contain drop-shadow-[0_18px_22px_rgb(11_31_74_/0.20)]"
         />
       </div>
-      <div className="absolute right-0 top-2 z-20 flex w-[210px] flex-col gap-2">
-        <Card className="w-full border-blue-100 bg-white/88 shadow-[0_18px_44px_rgb(11_31_74_/0.12)] backdrop-blur-xl">
-          <CardContent className="p-3">
-            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-muted-foreground">Authentication Status</p>
-            <div className="mt-3 flex items-center gap-2.5">
-              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-green-100 text-real">
-                <ShieldCheck className="h-6 w-6" />
+      <div className="absolute right-0 top-1.5 z-20 flex w-[200px] flex-col gap-1.5">
+        <Card className="w-full border-blue-100 bg-white/88 shadow-[0_16px_40px_rgb(11_31_74_/0.10)] backdrop-blur-xl">
+          <CardContent className="p-2.5">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-muted-foreground">Authentication Status</p>
+            <div className="mt-2 flex items-center gap-2.5">
+              <span className="grid h-9 w-9 place-items-center rounded-2xl bg-green-100 text-real">
+                <ShieldCheck className="h-5 w-5" />
               </span>
               <div>
-                <strong className="block text-lg font-black text-real">Ready</strong>
+                <strong className="block text-base font-black text-real">Ready</strong>
                 <span className="text-sm font-extrabold text-real">93.54%</span>
               </div>
             </div>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-green-100">
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-green-100">
               <div className="h-full w-[93.54%] rounded-full bg-real" />
             </div>
-            <p className="mt-1.5 text-xs text-muted-foreground">Improved CNN test accuracy</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">Improved CNN test accuracy</p>
           </CardContent>
         </Card>
-        <div className="flex flex-col gap-1.5 px-5">
+        <div className="flex flex-col gap-1 px-4">
           <HeroStep title="Package Detected" />
           <HeroStep title="AI Verification" />
           <HeroStep title="Authenticity Check" />
         </div>
         <Card className="w-full border-blue-200 bg-white/82 shadow-premium backdrop-blur-xl">
-          <CardContent className="flex items-center gap-2.5 p-3">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-blue-50 text-primary">
+          <CardContent className="flex items-center gap-2.5 p-2.5">
+            <span className="grid h-9 w-9 place-items-center rounded-2xl bg-blue-50 text-primary">
               <Star className="h-5 w-5" />
             </span>
             <div>
               <strong className="block text-sm">Securing Medicines.</strong>
               <span className="block text-xs text-muted-foreground">Protecting Communities.</span>
-              <span className="mt-1 block text-xs font-bold text-primary">Built for Somali Pharmacies</span>
+              <span className="mt-0.5 block text-[11px] font-bold text-primary">Built for Somali Pharmacies</span>
             </div>
           </CardContent>
         </Card>
@@ -239,13 +239,13 @@ function HeroScanVisual() {
 
 function HeroStep({ title }: { title: string }) {
   return (
-    <div className="flex items-center gap-2.5">
-      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-green-200 bg-white text-real shadow-sm">
-        <CheckCircle2 className="h-4 w-4" />
+    <div className="flex items-center gap-2">
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-green-200 bg-white text-real shadow-sm">
+        <CheckCircle2 className="h-3.5 w-3.5" />
       </span>
       <div>
         <strong className="block text-sm">{title}</strong>
-        <span className="text-xs text-muted-foreground">Completed</span>
+        <span className="text-[11px] text-muted-foreground">Completed</span>
       </div>
     </div>
   );
