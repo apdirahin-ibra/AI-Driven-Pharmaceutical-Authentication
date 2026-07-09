@@ -49,10 +49,10 @@ export function LandingPage() {
     <div className="min-h-screen bg-background">
       <PublicHeader />
       <main>
-        <section id="home" className="relative scroll-mt-28 overflow-hidden border-b border-blue-100 bg-[linear-gradient(120deg,#ffffff_0%,#f7fbff_46%,#eef8ff_100%)] px-4 py-8 lg:px-8 lg:py-10">
+        <section id="home" className="relative scroll-mt-28 overflow-hidden border-b border-blue-100 bg-[linear-gradient(120deg,#ffffff_0%,#f7fbff_46%,#eef8ff_100%)] px-4 py-6 lg:px-8 lg:py-8">
           <div className="absolute inset-0 blue-grid opacity-60" />
           <div className="absolute inset-y-0 right-0 w-[44%] bg-[linear-gradient(90deg,rgba(255,255,255,0),rgba(213,238,255,0.75))]" />
-          <div className="relative mx-auto grid min-h-[420px] max-w-[1440px] items-center gap-6 lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="relative mx-auto grid max-w-[1440px] gap-5 lg:grid-cols-[0.82fr_1.18fr]">
             <div className="pt-3 lg:pt-0">
               <h1 className="max-w-[480px] text-3xl font-black leading-[1.08] tracking-tight text-foreground md:text-4xl xl:text-[2.8rem]">
                 AI-Driven Pharmaceutical <span className="text-primary">Authentication</span> for Safer Medicine Verification
@@ -68,7 +68,7 @@ export function LandingPage() {
                   <Link to="/app/models"><Brain className="h-4 w-4" /> View AI Models</Link>
                 </Button>
               </div>
-              <div className="mt-8 grid max-w-2xl gap-4 sm:grid-cols-3">
+              <div className="mt-6 grid max-w-2xl gap-4 sm:grid-cols-3">
                 <HeroFeature Icon={Brain} title="AI-Powered" detail="Detection" />
                 <HeroFeature Icon={ShieldCheck} title="Advanced" detail="Verification" />
                 <HeroFeature Icon={BarChart3} title="Trusted by" detail="Pharmacies" />
@@ -182,21 +182,21 @@ export function LandingPage() {
 
 function HeroScanVisual() {
   return (
-    <div className="relative hidden min-h-[370px] lg:block">
-      <div className="absolute left-6 top-3 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.18em] text-primary">
+    <div className="relative hidden min-h-[320px] lg:block">
+      <div className="absolute left-6 top-2 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[0.18em] text-primary">
         <span className="h-px w-10 bg-primary/45" />
         AI scan in progress
         <span className="h-px w-10 bg-primary/45" />
       </div>
-      <div className="scan-line absolute left-2 top-12 h-[290px] w-[450px] rounded-[1.75rem] border-2 border-sky-300/75 bg-white/35 p-5 shadow-[0_22px_68px_rgb(11_124_255_/0.12)]">
+      <div className="scan-line absolute left-2 top-10 h-[260px] w-[450px] rounded-[1.75rem] border-2 border-sky-300/75 bg-white/35 p-5 shadow-[0_22px_68px_rgb(11_124_255_/0.12)]">
         <div className="blue-grid absolute inset-4 rounded-[1.4rem] opacity-70" />
         <img
           src={heroMedicineImage}
           alt="Amoxicillin medicine package being scanned"
-          className="relative z-10 mt-5 h-[210px] w-full object-contain drop-shadow-[0_24px_28px_rgb(11_31_74_/0.20)]"
+          className="relative z-10 mt-4 h-[185px] w-full object-contain drop-shadow-[0_24px_28px_rgb(11_31_74_/0.20)]"
         />
       </div>
-      <div className="absolute right-0 top-6 z-20 flex w-[235px] flex-col gap-3">
+      <div className="absolute right-0 top-4 z-20 flex w-[235px] flex-col gap-2.5">
         <Card className="w-full border-blue-100 bg-white/88 shadow-[0_20px_50px_rgb(11_31_74_/0.12)] backdrop-blur-xl">
           <CardContent className="p-4">
             <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-muted-foreground">Authentication Status</p>
