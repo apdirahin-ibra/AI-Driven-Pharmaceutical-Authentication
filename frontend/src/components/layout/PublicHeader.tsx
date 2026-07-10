@@ -22,11 +22,11 @@ export function PublicHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-white/92 backdrop-blur-xl">
-      <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-4 lg:px-8">
+      <div className="mx-auto flex h-20 max-w-[1360px] items-center justify-between px-4 lg:h-[4.5rem] lg:px-8">
         <Link to="/" aria-label="PharmaGuard AI home">
           <BrandMark />
         </Link>
-        <nav className="hidden items-center gap-10 text-base font-medium text-foreground lg:flex">
+        <nav className="hidden items-center gap-8 text-sm font-semibold text-foreground lg:flex xl:gap-10">
           {links.map((link) => (
             <Link key={link.label} to={link.href} onClick={(event) => scrollToLandingSection(event, link.href)} className={`relative py-2 hover:text-primary ${link.label === "Home" ? "text-foreground after:absolute after:bottom-0 after:left-1/2 after:h-1 after:w-5 after:-translate-x-1/2 after:rounded-full after:bg-primary" : ""}`}>
               {link.label}
@@ -34,10 +34,10 @@ export function PublicHeader() {
           ))}
         </nav>
         <div className="hidden items-center gap-3 lg:flex">
-          <Button asChild variant="outline" size="default">
+          <Button asChild variant="outline" size="default" className="h-10 px-4">
             <Link to="/login"><UserRound className="h-4 w-4" /> Sign In</Link>
           </Button>
-          <Button asChild size="default">
+          <Button asChild size="default" className="h-10 px-4">
             <Link to="/login">Get Started <ArrowRight className="h-4 w-4" /></Link>
           </Button>
         </div>
