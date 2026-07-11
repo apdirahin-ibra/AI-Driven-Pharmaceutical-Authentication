@@ -317,15 +317,15 @@ function WorkflowVisual({ variant }: { variant: "upload" | "scan" | "score" | "r
   if (variant === "score") {
     return (
       <div className="text-center">
-        <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-[conic-gradient(#22c55e_0_56deg,var(--primary)_56deg_337deg,#dff1ff_337deg_360deg)] p-2 shadow-[0_12px_28px_rgb(11_124_255_/0.12)] lg:h-20 lg:w-20">
-          <div className="grid h-full w-full place-items-center rounded-full bg-white">
-            <div>
-              <strong className="block text-lg font-black text-real">{modelAccuracy}</strong>
-              <span className="text-xs font-semibold text-muted-foreground">Confidence Score</span>
+        <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-[conic-gradient(#22c55e_0_56deg,var(--primary)_56deg_337deg,#dff1ff_337deg_360deg)] p-2 shadow-[0_12px_28px_rgb(11_124_255_/0.12)]">
+          <div className="grid h-full w-full place-items-center rounded-full bg-white px-1 text-center">
+            <div className="flex flex-col items-center gap-0.5">
+              <strong className="block text-base font-black leading-none text-real">{modelAccuracy}</strong>
+              <span className="block max-w-[64px] text-[10px] font-semibold leading-tight text-muted-foreground">Confidence Score</span>
             </div>
           </div>
         </div>
-        <div className="mx-auto mt-3 flex h-3 max-w-32 items-center justify-center gap-1 lg:mt-2">
+        <div className="mx-auto mt-3 flex h-3 max-w-32 items-center justify-center gap-1">
           {Array.from({ length: 24 }).map((_, index) => (
             <span key={index} className={`h-2 w-1 rounded-full ${index > 20 ? "bg-primary" : "bg-real/70"}`} />
           ))}

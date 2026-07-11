@@ -1,25 +1,40 @@
 **Findings**
-- No actionable P0/P1/P2 findings remain for the redesigned landing page sections below the existing hero.
+
+- No code-level P0/P1/P2 issues were found in the requested model-table data update or Confidence Score gauge correction.
+- Visual comparison is blocked because the in-app browser could not initialize in this session, so a browser-rendered implementation screenshot could not be captured.
 
 **Source Visual Truth**
-- User prompt: `C:\Users\apdir\.codex\attachments\56db675f-acfb-4e18-81ce-dd23714fe52c\pasted-text.txt`
-- Scope: redesign all public landing sections immediately after the existing hero. Hero section preserved.
+
+- `C:\Users\apdir\AppData\Local\Temp\codex-clipboard-3b21504e-d757-47b9-b800-8da5053d09d6.png`
+- `C:\Users\apdir\AppData\Local\Temp\codex-clipboard-e0505f41-f2eb-4719-a5bb-2bcd7ae562fa.png`
 
 **Implementation Evidence**
-- Local URL: `http://127.0.0.1:5173`
-- Screenshot: `D:\SETSOM2026\projects\pharma-auth-system\docs\qa\landing-redesigned-below-hero-desktop.png`
-- Viewports checked: `1440 x 950`, `390 x 844`
-- State: public landing page, below-hero sections and footer.
+
+- Files: `frontend/src/data/model-data.ts`, `frontend/src/pages/LandingPage.tsx`
+- Intended viewport: desktop reference captures
+- State: model comparison table and public landing-page How It Works section
+- Browser-rendered screenshot: unavailable because the in-app browser connection failed
 
 **Focused Region Comparison**
-- Replaced the plain post-hero content with a polished visual workflow, premium benefits grid, simple process section, selected model highlight, Somali pharmacy mission section, and richer footer.
-- Preserved the existing hero layout, copy, sizing, and right-side authentication visual.
-- Kept project facts accurate: CNN, 93.54% test accuracy, 94% fake recall, 75% suspicious threshold, and academic prototype framing.
+
+- Table data is present for all five requested comparison models with exact Fake Recall and Test Loss values.
+- The donut remains 96px at desktop instead of shrinking to 80px. Its inner content is centered as a vertical stack with constrained text width and tighter type, preventing overlap by construction.
+- Fonts, colors, card styling, layout structure, and copy outside the requested fields remain unchanged.
 
 **Verification**
+
 - `npm run typecheck`: passed.
 - `npm run build`: passed.
-- Browser check at desktop and mobile: sections present, no horizontal overflow, footer visible, no console errors.
-- Vite chunk-size warning remains non-blocking.
+- `git diff --check`: passed.
+- Browser interactions and console errors: not checked because browser initialization was unavailable.
 
-final result: passed
+**Implementation Checklist**
+
+- [x] Add exact Fake Recall values.
+- [x] Add exact Test Loss values.
+- [x] Center percentage within the donut.
+- [x] Place Confidence Score below the percentage inside the donut.
+- [x] Preserve existing colors, card style, and surrounding layout.
+- [ ] Capture and compare a browser-rendered screenshot when the in-app browser is available.
+
+final result: blocked
