@@ -3,8 +3,8 @@ import { modelFacts } from "@/lib/constants";
 
 export const modelPerformances: ModelPerformance[] = [
   {
-    name: "Improved CNN",
-    category: "Improved CNN Architecture",
+    name: "CNN",
+    category: "CNN Architecture",
     accuracy: modelFacts.testAccuracy * 100,
     purpose: "Medicine image classification",
     status: "Selected Model",

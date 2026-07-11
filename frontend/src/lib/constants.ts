@@ -16,7 +16,7 @@ const tn = confusionMatrix[1].predictedReal;
 const evaluatedImages = tp + fn + fp + tn;
 
 export const modelFacts = {
-  selectedModel: "Improved CNN",
+  selectedModel: "CNN",
   modelFile: "cnn_best_model.keras",
   modelVersion: null,
   evaluatedAt: null,

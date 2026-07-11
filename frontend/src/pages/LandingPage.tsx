@@ -87,7 +87,7 @@ export function LandingPage() {
         <section id="how-it-works" className="relative scroll-mt-24 overflow-hidden bg-white px-4 py-10 lg:px-8 lg:py-9">
           <div className="absolute inset-x-0 top-0 h-12 bg-[linear-gradient(180deg,rgba(223,241,255,0.45),rgba(255,255,255,0))]" />
           <div className="absolute inset-0 blue-grid opacity-25" />
-          <div className="relative mx-auto max-w-[1280px]">
+          <div className="relative mx-auto max-w-[1200px]">
             <SectionHeader
               eyebrow="How It Works"
               title="How PharmaGuard AI Works"
@@ -95,7 +95,7 @@ export function LandingPage() {
             />
             <div className="relative mt-7 lg:mt-6">
               <div className="absolute left-[6.5%] right-[6.5%] top-0 hidden h-1 rounded-full bg-[linear-gradient(90deg,rgba(11,124,255,0.1),rgba(11,124,255,0.9),rgba(11,124,255,0.1))] lg:block" />
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-5">
                 <WorkflowCard number={1} titleA="Upload" titleB="Medicine Image" Icon={UploadCloud} variant="upload" />
                 <WorkflowCard number={2} titleA="AI Analyzes" titleB="Visual Patterns" Icon={Brain} variant="scan" />
                 <WorkflowCard number={3} titleA="Confidence Score" titleB="Generated" Icon={LineChart} variant="score" />
@@ -109,7 +109,7 @@ export function LandingPage() {
                 </span>
                 <Metric value={modelAccuracy} label="Test Accuracy" />
                 <span className="hidden h-10 w-px bg-border sm:block" />
-                <Metric value="Improved CNN" label="Selected Model" />
+                <Metric value={modelFacts.selectedModel} label="Selected Model" />
               </CardContent>
             </Card>
           </div>
@@ -136,7 +136,7 @@ export function LandingPage() {
               <CardContent className="grid gap-5 p-5 lg:grid-cols-[0.9fr_1.15fr_0.85fr] lg:p-6">
                 <div>
                   <p className="text-[11px] font-extrabold uppercase tracking-[0.2em] text-primary">Model Highlight</p>
-                  <h2 className="mt-2 text-xl font-black tracking-tight md:text-2xl">Selected Model: Improved CNN</h2>
+                  <h2 className="mt-2 text-xl font-black tracking-tight md:text-2xl">Selected Model: {modelFacts.selectedModel}</h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
                     A convolutional neural network was selected for the PharmaGuard AI prototype based on its performance in identifying learned visual patterns in pharmaceutical package images.
                   </p>
@@ -157,7 +157,7 @@ export function LandingPage() {
                 <div className="grid content-center gap-2.5">
                   <MiniMetric value={modelAccuracy} label="Test Accuracy" />
                   <MiniMetric value={formatPercent(modelFacts.fakeRecall, 2)} label="Fake Medicine Recall" />
-                  <MiniMetric value="Improved CNN" label="Selected Model" />
+                  <MiniMetric value={modelFacts.selectedModel} label="Selected Model" />
                 </div>
               </CardContent>
             </Card>
@@ -218,7 +218,7 @@ function HeroScanVisual() {
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-green-100">
               <div className="h-full rounded-full bg-real" style={{ width: modelAccuracy }} />
             </div>
-            <p className="mt-1 text-[11px] text-muted-foreground">Improved CNN test accuracy</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">{modelFacts.selectedModel} test accuracy</p>
           </CardContent>
         </Card>
         <div className="flex flex-col gap-1.5 px-3">
@@ -296,10 +296,10 @@ function WorkflowCard({ number, titleA, titleB, Icon, variant }: { number: numbe
     <div className="relative pt-5">
       <span className="absolute left-1/2 top-0 z-20 grid h-9 w-9 -translate-x-1/2 place-items-center rounded-full border-4 border-white bg-primary text-sm font-black text-white shadow-[0_8px_20px_rgb(11_124_255_/0.3)]">{number}</span>
       {number < 4 && (
-        <ArrowRight className="absolute -right-5 top-[48%] z-20 hidden h-5 w-5 text-primary lg:block" />
+        <ArrowRight className="absolute -right-[18px] top-1/2 z-20 hidden h-4 w-4 -translate-y-1/2 text-primary lg:block" />
       )}
       <div className="group h-full rounded-[1.35rem] border border-blue-200 bg-white/96 p-3.5 shadow-premium transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_20px_50px_rgb(11_124_255_/0.14)] lg:p-3">
-        <div className="grid min-h-[155px] place-items-center rounded-[1rem] bg-white p-2 lg:min-h-[135px]">
+        <div className="grid min-h-[155px] place-items-center rounded-[1rem] bg-white p-2 lg:min-h-[120px]">
           <WorkflowVisual variant={variant} />
         </div>
         <div className="mt-3 flex items-center gap-3 lg:mt-2.5">
@@ -336,13 +336,13 @@ function WorkflowVisual({ variant }: { variant: "upload" | "scan" | "score" | "r
 
   if (variant === "result") {
     return (
-      <div className="w-full rounded-2xl border border-green-100 bg-white p-3.5 text-center lg:p-3">
-        <span className="mx-auto grid h-16 w-16 place-items-center rounded-[2rem] bg-green-100 text-real shadow-[0_12px_28px_rgb(34_197_94_/0.16)] lg:h-14 lg:w-14">
-          <ShieldCheck className="h-10 w-10 fill-real/20 lg:h-8 lg:w-8" />
+      <div className="w-full rounded-2xl border border-green-100 bg-white p-3.5 text-center lg:p-2.5">
+        <span className="mx-auto grid h-16 w-16 place-items-center rounded-[2rem] bg-green-100 text-real shadow-[0_12px_28px_rgb(34_197_94_/0.16)] lg:h-12 lg:w-12">
+          <ShieldCheck className="h-10 w-10 fill-real/20 lg:h-7 lg:w-7" />
         </span>
-        <strong className="mt-2 block text-2xl font-black text-real lg:text-xl">Real</strong>
-        <span className="mt-1 block text-lg font-extrabold text-real lg:text-base">{modelAccuracy}</span>
-        <span className="mx-auto mt-2 inline-flex rounded-full bg-green-100 px-3 py-0.5 text-xs font-bold text-real">Authentic</span>
+        <strong className="mt-2 block text-2xl font-black text-real lg:mt-1 lg:text-lg">Real</strong>
+        <span className="mt-1 block text-lg font-extrabold text-real lg:text-sm">{modelAccuracy}</span>
+        <span className="mx-auto mt-2 inline-flex rounded-full bg-green-100 px-3 py-0.5 text-xs font-bold text-real lg:mt-1">Authentic</span>
       </div>
     );
   }
