@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from typing import Literal
 
 from .config import Settings, get_settings
+from .roles import normalize_role
 
 
 security = HTTPBearer(auto_error=False)
@@ -82,9 +83,7 @@ async def get_current_user(
     app_metadata = data.get("app_metadata") or {}
     email = data.get("email") or "unknown@example.com"
     name = metadata.get("full_name") or metadata.get("name") or email.split("@")[0]
-    role = app_metadata.get("role") or metadata.get("role") or "Pharmacist"
-    if role not in {"Admin", "Pharmacist"}:
-        role = "Pharmacist"
+    role = normalize_role(app_metadata.get("role") or metadata.get("role"))
     user = AuthenticatedUser(id=data["id"], email=email, name=name, role=role)
     _auth_cache[credentials.credentials] = (monotonic() + AUTH_CACHE_SECONDS, user)
     return user

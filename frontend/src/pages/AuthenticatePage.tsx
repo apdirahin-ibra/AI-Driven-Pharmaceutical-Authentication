@@ -20,7 +20,7 @@ import { fileToDataUrl, savePredictionScan } from "@/api/records";
 import { useAnalysisProgress } from "@/hooks/useAnalysisProgress";
 import type { PredictionResponse } from "@/types/domain";
 
-const MAX_STORED_PREVIEW_SIZE = 1.5 * 1024 * 1024;
+const MAX_STORED_IMAGE_SIZE = 10 * 1024 * 1024;
 
 export function AuthenticatePage() {
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ export function AuthenticatePage() {
     try {
       const prediction = await predictMedicineImage(file);
       const imageDataUrl =
-        file.size <= MAX_STORED_PREVIEW_SIZE ? await fileToDataUrl(file).catch(() => undefined) : undefined;
+        file.size <= MAX_STORED_IMAGE_SIZE ? await fileToDataUrl(file).catch(() => undefined) : undefined;
       await analysis.complete();
       setResult(prediction);
       setShowResult(true);
@@ -94,7 +94,7 @@ export function AuthenticatePage() {
         const suspiciousPrediction = unsupportedImagePrediction(predictionError);
         try {
           const imageDataUrl =
-            file.size <= MAX_STORED_PREVIEW_SIZE ? await fileToDataUrl(file).catch(() => undefined) : undefined;
+            file.size <= MAX_STORED_IMAGE_SIZE ? await fileToDataUrl(file).catch(() => undefined) : undefined;
           await analysis.complete();
           setResult(suspiciousPrediction);
           setShowResult(true);

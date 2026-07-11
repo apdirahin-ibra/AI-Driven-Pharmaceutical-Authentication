@@ -10,6 +10,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/auth/AuthProvider";
 import { BrandMark } from "@/components/shared/BrandMark";
 import heroMedicineImage from "@/assets/pharmaguard-amoxicillin-hero.png";
+import { modelFacts } from "@/lib/constants";
+import { formatPercent } from "@/lib/utils";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -145,7 +147,7 @@ function LoginShowcase() {
       <div className="absolute right-2 top-24 z-30 rounded-2xl border border-blue-100 bg-white/90 p-3 text-sm shadow-premium backdrop-blur">
         <p className="text-xs font-extrabold uppercase tracking-wide text-primary">Authenticity</p>
         <strong className="mt-1 block text-primary">Real</strong>
-        <span className="text-muted-foreground">93.54% accuracy</span>
+        <span className="text-muted-foreground">{formatPercent(modelFacts.testAccuracy, 2)} accuracy</span>
       </div>
       <div className="absolute bottom-8 right-16 h-20 w-20 rounded-full border border-sky-200 opacity-60">
         <div className="absolute inset-4 rounded-full border border-sky-300" />

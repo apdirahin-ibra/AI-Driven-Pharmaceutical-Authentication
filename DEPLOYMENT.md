@@ -41,6 +41,7 @@ IMAGE_VALIDATOR_MODEL=openai/gpt-4o
 IMAGE_VALIDATOR_TIMEOUT_SECONDS=30
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+SCAN_IMAGE_BUCKET=medicine-scans
 FRONTEND_ORIGINS=https://your-vercel-domain.vercel.app
 ```
 
@@ -51,6 +52,8 @@ https://your-render-backend.onrender.com/health
 ```
 
 ## 3. Deploy the frontend on Vercel
+
+Before deploying backend code that writes scan images, apply the SQL migrations in `supabase/migrations/` through the Supabase SQL editor. The migration creates the private `medicine-scans` bucket and ownership columns required by the API.
 
 Create a new Vercel project from the same repository.
 

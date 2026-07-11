@@ -5,11 +5,11 @@ export const modelPerformances: ModelPerformance[] = [
   {
     name: "Improved CNN",
     category: "Improved CNN Architecture",
-    accuracy: 93.54,
+    accuracy: modelFacts.testAccuracy * 100,
     purpose: "Medicine image classification",
     status: "Selected Model",
     testLoss: modelFacts.testLoss,
-    fakeRecall: 94,
+    fakeRecall: modelFacts.fakeRecall * 100,
   },
   {
     name: "ResNet50",

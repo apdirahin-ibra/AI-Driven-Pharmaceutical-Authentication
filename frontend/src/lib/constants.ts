@@ -1,32 +1,37 @@
+const confusionMatrix = [
+  { actual: "Actual Fake", predictedFake: 152, predictedReal: 10 },
+  { actual: "Actual Real", predictedFake: 19, predictedReal: 268 },
+] as const;
+
+const datasetSplits = {
+  training: 661,
+  validation: 453,
+  testing: 449,
+} as const;
+
+const tp = confusionMatrix[0].predictedFake;
+const fn = confusionMatrix[0].predictedReal;
+const fp = confusionMatrix[1].predictedFake;
+const tn = confusionMatrix[1].predictedReal;
+const evaluatedImages = tp + fn + fp + tn;
+
 export const modelFacts = {
   selectedModel: "Improved CNN",
   modelFile: "cnn_best_model.keras",
-  testAccuracy: 0.9354,
+  modelVersion: null,
+  evaluatedAt: null,
+  datasetVersion: null,
+  testAccuracy: (tp + tn) / evaluatedImages,
   testLoss: 0.1784,
-  fakeRecall: 0.94,
+  fakeRecall: tp / (tp + fn),
   suspiciousThreshold: 0.75,
   inputSize: "224 x 224 x 3",
   outputClasses: "Fake / Real",
   dataset: {
-    total: 1563,
-    training: 661,
-    validation: 453,
-    testing: 449,
+    ...datasetSplits,
+    total: datasetSplits.training + datasetSplits.validation + datasetSplits.testing,
   },
-  fakeMetrics: {
-    precision: 0.89,
-    recall: 0.94,
-    f1: 0.91,
-  },
-  realMetrics: {
-    precision: 0.96,
-    recall: 0.93,
-    f1: 0.95,
-  },
-  confusionMatrix: [
-    { actual: "Actual Fake", predictedFake: 152, predictedReal: 10 },
-    { actual: "Actual Real", predictedFake: 19, predictedReal: 268 },
-  ],
+  confusionMatrix,
 } as const;
 
 export const semanticColors = {

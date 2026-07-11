@@ -3,6 +3,8 @@ create table if not exists public.scan_records (
   medicine text not null,
   image_label text not null,
   image_data_url text,
+  image_bucket text,
+  image_path text,
   result text not null check (result in ('Real', 'Fake', 'Suspicious')),
   model_prediction text not null check (model_prediction in ('Real', 'Fake')),
   confidence double precision not null,
@@ -10,6 +12,7 @@ create table if not exists public.scan_records (
   real_score double precision not null,
   model text not null,
   pharmacist text not null,
+  pharmacist_id uuid references auth.users(id) on delete set null,
   date_time text not null,
   review_status text not null,
   created_at timestamptz not null default now()
@@ -21,12 +24,15 @@ create table if not exists public.risk_reports (
   medicine text not null,
   image_label text not null,
   image_data_url text,
+  image_bucket text,
+  image_path text,
   ai_result text not null check (ai_result in ('Fake', 'Suspicious')),
   model_prediction text not null check (model_prediction in ('Real', 'Fake')),
   confidence double precision not null,
   fake_score double precision not null,
   real_score double precision not null,
   pharmacist text not null,
+  pharmacist_id uuid references auth.users(id) on delete set null,
   scan_date text not null,
   status text not null check (status in ('Open', 'Under Review', 'Resolved')),
   notes text not null,
@@ -42,3 +48,25 @@ create index if not exists risk_reports_created_at_idx
 
 create index if not exists risk_reports_scan_id_idx
   on public.risk_reports(scan_id);
+
+create index if not exists scan_records_pharmacist_id_idx
+  on public.scan_records(pharmacist_id, created_at desc);
+
+create index if not exists risk_reports_pharmacist_id_idx
+  on public.risk_reports(pharmacist_id, created_at desc);
+
+alter table public.scan_records enable row level security;
+alter table public.risk_reports enable row level security;
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'medicine-scans',
+  'medicine-scans',
+  false,
+  10485760,
+  array['image/jpeg', 'image/png', 'image/webp']
+)
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;

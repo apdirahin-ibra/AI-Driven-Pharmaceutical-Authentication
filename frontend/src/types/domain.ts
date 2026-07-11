@@ -34,13 +34,14 @@ export interface ModelPerformance {
   status: "Selected Model" | "Evaluated";
   testLoss?: number;
   fakeRecall?: number;
+  evaluatedAt?: string;
 }
 
 export interface ScanRecord {
   id: string;
   medicine: string;
   imageLabel: string;
-  imageDataUrl?: string;
+  hasImage: boolean;
   result: PredictionStatus;
   modelPrediction: "Real" | "Fake";
   confidence: number;
@@ -50,6 +51,7 @@ export interface ScanRecord {
   pharmacist: string;
   dateTime: string;
   reviewStatus: string;
+  createdAt?: string;
 }
 
 export interface RiskReport {
@@ -57,7 +59,7 @@ export interface RiskReport {
   scanId: string;
   medicine: string;
   imageLabel: string;
-  imageDataUrl?: string;
+  hasImage: boolean;
   aiResult: Exclude<PredictionStatus, "Real">;
   modelPrediction: "Real" | "Fake";
   confidence: number;
@@ -67,4 +69,5 @@ export interface RiskReport {
   scanDate: string;
   status: RiskStatus;
   notes: string;
+  createdAt?: string;
 }

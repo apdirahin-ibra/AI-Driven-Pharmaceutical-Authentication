@@ -31,7 +31,11 @@ image_validator = MedicalImageValidator(
     settings.validator_model,
     settings.validator_timeout_seconds,
 )
-record_store = SupabaseRecordStore(settings.supabase_url, settings.supabase_service_role_key)
+record_store = SupabaseRecordStore(
+    settings.supabase_url,
+    settings.supabase_service_role_key,
+    settings.scan_image_bucket,
+)
 user_admin = SupabaseUserAdmin(settings.supabase_url, settings.supabase_service_role_key)
 ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/webp"}
 
@@ -79,7 +83,7 @@ def health() -> dict:
 
 
 @app.get("/diagnostics/dependencies")
-async def dependency_diagnostics() -> dict:
+async def dependency_diagnostics(_: AuthenticatedUser = Depends(require_admin)) -> dict:
     diagnostics: dict[str, dict | list[str] | str] = {
         "status": "ok",
         "frontend_origins": list(settings.frontend_origins),
@@ -191,6 +195,11 @@ def records_error(exc: Exception) -> HTTPException:
 
 
 def user_admin_error(exc: Exception) -> HTTPException:
+    if isinstance(exc, SupabaseUserAdminError):
+        return HTTPException(
+            status_code=exc.status_code,
+            detail={"code": exc.code, "message": str(exc), "retryable": exc.retryable},
+        )
     return HTTPException(
         status_code=503,
         detail={
@@ -242,9 +251,9 @@ async def predict(file: UploadFile = File(...)) -> dict:
 
 
 @app.get("/scans")
-async def list_scans(_: AuthenticatedUser = Depends(get_current_user)) -> list[dict]:
+async def list_scans(user: AuthenticatedUser = Depends(get_current_user)) -> list[dict]:
     try:
-        return await run_in_threadpool(record_store.list_scans)
+        return await run_in_threadpool(record_store.list_scans, user.id, user.name, user.role == "Admin")
     except (SupabaseNotConfiguredError, SupabaseRecordsError) as exc:
         raise records_error(exc) from exc
 
@@ -252,15 +261,15 @@ async def list_scans(_: AuthenticatedUser = Depends(get_current_user)) -> list[d
 @app.post("/scans", status_code=status.HTTP_201_CREATED)
 async def create_scan(request: NewScanRequest, user: AuthenticatedUser = Depends(get_current_user)) -> dict:
     try:
-        return await run_in_threadpool(record_store.create_scan, request, user.name)
+        return await run_in_threadpool(record_store.create_scan, request, user.id, user.name)
     except (SupabaseNotConfiguredError, SupabaseRecordsError) as exc:
         raise records_error(exc) from exc
 
 
 @app.get("/reports")
-async def list_reports(_: AuthenticatedUser = Depends(get_current_user)) -> list[dict]:
+async def list_reports(user: AuthenticatedUser = Depends(get_current_user)) -> list[dict]:
     try:
-        return await run_in_threadpool(record_store.list_reports)
+        return await run_in_threadpool(record_store.list_reports, user.id, user.name, user.role == "Admin")
     except (SupabaseNotConfiguredError, SupabaseRecordsError) as exc:
         raise records_error(exc) from exc
 
@@ -269,10 +278,34 @@ async def list_reports(_: AuthenticatedUser = Depends(get_current_user)) -> list
 async def update_report(
     report_id: str,
     request: UpdateRiskReportRequest,
-    _: AuthenticatedUser = Depends(get_current_user),
+    _: AuthenticatedUser = Depends(require_admin),
 ) -> list[dict]:
     try:
         return await run_in_threadpool(record_store.update_report, report_id, request)
+    except (SupabaseNotConfiguredError, SupabaseRecordsError) as exc:
+        raise records_error(exc) from exc
+
+
+@app.get("/scans/{scan_id}/image-url")
+async def scan_image_url(scan_id: str, user: AuthenticatedUser = Depends(get_current_user)) -> dict:
+    try:
+        return await run_in_threadpool(
+            record_store.get_scan_image_url,
+            scan_id,
+            user.id,
+            user.name,
+            user.role == "Admin",
+        )
+    except PermissionError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={"code": "IMAGE_ACCESS_DENIED", "message": str(exc), "retryable": False},
+        ) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "SCAN_IMAGE_NOT_FOUND", "message": str(exc), "retryable": False},
+        ) from exc
     except (SupabaseNotConfiguredError, SupabaseRecordsError) as exc:
         raise records_error(exc) from exc
 

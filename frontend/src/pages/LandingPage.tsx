@@ -7,6 +7,10 @@ import { PublicFooter } from "@/components/layout/PublicFooter";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import heroMedicineImage from "@/assets/pharmaguard-amoxicillin-hero.png";
 import workflowMedicineImage from "@/assets/pharmaguard-workflow-medicine.png";
+import { modelFacts } from "@/lib/constants";
+import { formatPercent } from "@/lib/utils";
+
+const modelAccuracy = formatPercent(modelFacts.testAccuracy, 2);
 
 const benefits = [
   {
@@ -103,7 +107,7 @@ export function LandingPage() {
                 <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-blue-50 text-primary">
                   <ShieldCheck className="h-7 w-7" />
                 </span>
-                <Metric value="93.54%" label="Test Accuracy" />
+                <Metric value={modelAccuracy} label="Test Accuracy" />
                 <span className="hidden h-10 w-px bg-border sm:block" />
                 <Metric value="Improved CNN" label="Selected Model" />
               </CardContent>
@@ -151,8 +155,8 @@ export function LandingPage() {
                   ))}
                 </div>
                 <div className="grid content-center gap-2.5">
-                  <MiniMetric value="93.54%" label="Test Accuracy" />
-                  <MiniMetric value="94%" label="Fake Medicine Recall" />
+                  <MiniMetric value={modelAccuracy} label="Test Accuracy" />
+                  <MiniMetric value={formatPercent(modelFacts.fakeRecall, 2)} label="Fake Medicine Recall" />
                   <MiniMetric value="Improved CNN" label="Selected Model" />
                 </div>
               </CardContent>
@@ -208,11 +212,11 @@ function HeroScanVisual() {
               </span>
               <div>
                 <strong className="block text-base font-black text-real">Ready</strong>
-                <span className="text-sm font-extrabold text-real">93.54%</span>
+                <span className="text-sm font-extrabold text-real">{modelAccuracy}</span>
               </div>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-green-100">
-              <div className="h-full w-[93.54%] rounded-full bg-real" />
+              <div className="h-full rounded-full bg-real" style={{ width: modelAccuracy }} />
             </div>
             <p className="mt-1 text-[11px] text-muted-foreground">Improved CNN test accuracy</p>
           </CardContent>
@@ -316,7 +320,7 @@ function WorkflowVisual({ variant }: { variant: "upload" | "scan" | "score" | "r
         <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-[conic-gradient(#22c55e_0_56deg,var(--primary)_56deg_337deg,#dff1ff_337deg_360deg)] p-2 shadow-[0_12px_28px_rgb(11_124_255_/0.12)] lg:h-20 lg:w-20">
           <div className="grid h-full w-full place-items-center rounded-full bg-white">
             <div>
-              <strong className="block text-lg font-black text-real">93.54%</strong>
+              <strong className="block text-lg font-black text-real">{modelAccuracy}</strong>
               <span className="text-xs font-semibold text-muted-foreground">Confidence Score</span>
             </div>
           </div>
@@ -337,7 +341,7 @@ function WorkflowVisual({ variant }: { variant: "upload" | "scan" | "score" | "r
           <ShieldCheck className="h-10 w-10 fill-real/20 lg:h-8 lg:w-8" />
         </span>
         <strong className="mt-2 block text-2xl font-black text-real lg:text-xl">Real</strong>
-        <span className="mt-1 block text-lg font-extrabold text-real lg:text-base">93.54%</span>
+        <span className="mt-1 block text-lg font-extrabold text-real lg:text-base">{modelAccuracy}</span>
         <span className="mx-auto mt-2 inline-flex rounded-full bg-green-100 px-3 py-0.5 text-xs font-bold text-real">Authentic</span>
       </div>
     );

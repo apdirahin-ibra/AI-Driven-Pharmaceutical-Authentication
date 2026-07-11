@@ -9,6 +9,11 @@ interface NewScanInput {
   imageDataUrl?: string;
 }
 
+export interface ScanImageReference {
+  url: string;
+  originalFileName: string;
+}
+
 export async function getScanRecords(): Promise<ScanRecord[]> {
   const response = await apiClient.get<ScanRecord[]>("/scans", { timeout: DATABASE_TIMEOUT_MS });
   return response.data;
@@ -16,6 +21,13 @@ export async function getScanRecords(): Promise<ScanRecord[]> {
 
 export async function getRiskReports(): Promise<RiskReport[]> {
   const response = await apiClient.get<RiskReport[]>("/reports", { timeout: DATABASE_TIMEOUT_MS });
+  return response.data;
+}
+
+export async function getScanImageReference(scanId: string): Promise<ScanImageReference> {
+  const response = await apiClient.get<ScanImageReference>(`/scans/${encodeURIComponent(scanId)}/image-url`, {
+    timeout: DATABASE_TIMEOUT_MS,
+  });
   return response.data;
 }
 

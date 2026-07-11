@@ -11,11 +11,15 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { RiskStatusBadge } from "@/components/shared/RiskStatusBadge";
 import { MetricCard } from "@/components/shared/MetricCard";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { MedicineScanImage } from "@/components/shared/MedicineScanImage";
 import { updateRiskReport } from "@/api/records";
+import { useAuth } from "@/auth/AuthProvider";
 import { useRiskReports } from "@/hooks/useRecords";
+import { formatDateTime } from "@/lib/utils";
 import type { RiskReport, RiskStatus } from "@/types/domain";
 
 export function ReportsPage() {
+  const { role } = useAuth();
   const { records: reports, isLoading, error } = useRiskReports();
   const [selectedReport, setSelectedReport] = useState<RiskReport | null>(null);
 
@@ -49,28 +53,27 @@ export function ReportsPage() {
         <CardContent className="overflow-x-auto">
           {error && <Alert variant="destructive" className="mb-5"><AlertDescription>{error}</AlertDescription></Alert>}
           <Table>
-            <TableHeader><TableRow><TableHead>Case ID</TableHead><TableHead>Medicine Image</TableHead><TableHead>AI Result</TableHead><TableHead>Confidence</TableHead><TableHead>Pharmacist</TableHead><TableHead>Status</TableHead><TableHead>Date</TableHead><TableHead /></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead>Case / Medicine</TableHead><TableHead>AI Result</TableHead><TableHead>Confidence</TableHead><TableHead>Pharmacist</TableHead><TableHead>Status</TableHead><TableHead>Scanned</TableHead><TableHead /></TableRow></TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={8} className="py-10 text-center text-muted-foreground">Loading risk reports...</TableCell>
+                  <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">Loading risk reports...</TableCell>
                 </TableRow>
               )}
               {reports.map((report) => (
                 <TableRow key={report.id}>
-                  <TableCell className="font-semibold">{report.id}</TableCell>
-                  <TableCell><div><strong>{report.medicine}</strong><p className="text-xs text-muted-foreground">{report.imageLabel}</p></div></TableCell>
+                  <TableCell><div className="flex items-center gap-3"><MedicineScanImage scanId={report.scanId} hasImage={report.hasImage} alt={`${report.medicine} uploaded package`} className="h-14 w-14 shrink-0 border border-border" onOpen={() => setSelectedReport(report)} /><div className="min-w-0"><strong className="block truncate">{report.medicine}</strong><p className="text-xs font-semibold text-primary">{report.id}</p><p className="max-w-[180px] truncate text-xs text-muted-foreground" title={report.imageLabel}>{report.imageLabel}</p></div></div></TableCell>
                   <TableCell><StatusBadge status={report.aiResult} /></TableCell>
                   <TableCell>{(report.confidence * 100).toFixed(1)}%</TableCell>
                   <TableCell>{report.pharmacist}</TableCell>
                   <TableCell><RiskStatusBadge status={report.status} /></TableCell>
-                  <TableCell>{report.scanDate}</TableCell>
+                  <TableCell className="whitespace-nowrap">{formatDateTime(report.createdAt || report.scanDate)}</TableCell>
                   <TableCell><Button variant="outline" size="sm" onClick={() => setSelectedReport(report)}>Open</Button></TableCell>
                 </TableRow>
               ))}
               {!isLoading && !error && reports.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="py-10">
+                    <TableCell colSpan={7} className="py-10">
                     <EmptyState
                       Icon={FileText}
                       title="No risk reports yet"
@@ -90,7 +93,7 @@ export function ReportsPage() {
               <SheetTitle>{selectedReport.id}</SheetTitle>
               <SheetDescription>{selectedReport.medicine} risk report.</SheetDescription>
             </SheetHeader>
-            <ReportDetail report={selectedReport} onUpdate={updateReport} />
+            <ReportDetail report={selectedReport} canReview={role === "Admin"} onUpdate={updateReport} />
           </SheetContent>
         )}
       </Sheet>
@@ -98,34 +101,56 @@ export function ReportsPage() {
   );
 }
 
-function ReportDetail({ report, onUpdate }: { report: RiskReport; onUpdate: (id: string, status: RiskStatus, notes?: string) => void }) {
+function ReportDetail({ report, canReview, onUpdate }: { report: RiskReport; canReview: boolean; onUpdate: (id: string, status: RiskStatus, notes?: string) => Promise<void> }) {
   const [notes, setNotes] = useState(report.notes);
+  const [isSaving, setIsSaving] = useState(false);
+  const [updateError, setUpdateError] = useState("");
+
+  const save = async (status: RiskStatus) => {
+    if (!canReview || isSaving) return;
+    setIsSaving(true);
+    setUpdateError("");
+    try {
+      await onUpdate(report.id, status, notes);
+    } catch {
+      setUpdateError("The review update could not be saved. Please retry.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="space-y-5">
-      {report.imageDataUrl ? (
-        <img src={report.imageDataUrl} alt="" className="h-56 w-full rounded-2xl border border-border object-contain bg-slate-50" />
-      ) : (
-        <div className="grid h-36 place-items-center rounded-2xl border border-border bg-blue-50 text-2xl font-black text-primary">{report.medicine}</div>
-      )}
+      <MedicineScanImage scanId={report.scanId} hasImage={report.hasImage} alt={`${report.medicine} uploaded package`} className="h-64 w-full border border-border bg-slate-50 [&_img]:object-contain" />
+      <p className="truncate text-xs text-muted-foreground" title={report.imageLabel}><strong>Original file:</strong> {report.imageLabel}</p>
       <div className="grid gap-3 sm:grid-cols-2">
+        <Detail label="Report ID" value={report.id} />
+        <Detail label="Scan ID" value={report.scanId} />
         <Detail label="AI Result" value={report.aiResult} />
         <Detail label="Model Prediction" value={report.modelPrediction} />
         <Detail label="Confidence" value={`${(report.confidence * 100).toFixed(1)}%`} />
         <Detail label="Fake Score" value={`${(report.fakeScore * 100).toFixed(1)}%`} />
         <Detail label="Real Score" value={`${(report.realScore * 100).toFixed(1)}%`} />
         <Detail label="Pharmacist" value={report.pharmacist} />
-        <Detail label="Scan Date" value={report.scanDate} />
+        <Detail label="Scanned at" value={formatDateTime(report.createdAt || report.scanDate)} />
         <Detail label="Report Status" value={report.status} />
       </div>
-      <div>
-        <label className="text-sm font-semibold">Review Notes</label>
-        <Textarea className="mt-2" value={notes} onChange={(event) => setNotes(event.target.value)} />
-      </div>
-      <div className="grid gap-2 sm:grid-cols-3">
-        <Button variant="outline" onClick={() => onUpdate(report.id, "Under Review", notes)}>Mark Under Review</Button>
-        <Button variant="outline" onClick={() => onUpdate(report.id, report.status, notes)}>Add Review Note</Button>
-        <Button onClick={() => onUpdate(report.id, "Resolved", notes)}>Resolve Case</Button>
-      </div>
+      {canReview ? (
+        <>
+          <div>
+            <label htmlFor="review-notes" className="text-sm font-semibold">Review Notes</label>
+            <Textarea id="review-notes" className="mt-2" value={notes} onChange={(event) => setNotes(event.target.value)} />
+          </div>
+          {updateError && <Alert variant="destructive"><AlertDescription>{updateError}</AlertDescription></Alert>}
+          <div className="grid gap-2 sm:grid-cols-3">
+            <Button variant="outline" disabled={isSaving} onClick={() => save("Under Review")}>Mark Under Review</Button>
+            <Button variant="outline" disabled={isSaving} onClick={() => save(report.status)}>Add Review Note</Button>
+            <Button disabled={isSaving} onClick={() => save("Resolved")}>Resolve Case</Button>
+          </div>
+        </>
+      ) : (
+        <Alert><AlertDescription>Only an Admin can change review status or notes. Pharmacists can view their own report details.</AlertDescription></Alert>
+      )}
     </div>
   );
 }

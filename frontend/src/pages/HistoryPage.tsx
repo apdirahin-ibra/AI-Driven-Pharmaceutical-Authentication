@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { CalendarDays, ChevronLeft, ChevronRight, Search, SlidersHorizontal } from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -11,7 +11,9 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ConfidenceProgress } from "@/components/shared/ConfidenceProgress";
+import { MedicineScanImage } from "@/components/shared/MedicineScanImage";
 import { useScanRecords } from "@/hooks/useRecords";
+import { formatDateTime } from "@/lib/utils";
 import type { PredictionStatus, ScanRecord } from "@/types/domain";
 
 export function HistoryPage() {
@@ -37,7 +39,7 @@ export function HistoryPage() {
         <CardHeader><CardTitle>Scan History</CardTitle></CardHeader>
         <CardContent>
           {error && <Alert variant="destructive" className="mb-5"><AlertDescription>{error}</AlertDescription></Alert>}
-          <div className="mb-5 grid gap-3 md:grid-cols-[1fr_180px_220px_52px]">
+          <div className="mb-5 grid gap-3 md:grid-cols-[1fr_190px]">
             <div className="relative">
               <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input className="pl-11" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by medicine or scan ID" />
@@ -51,12 +53,10 @@ export function HistoryPage() {
                 <SelectItem value="Suspicious">Suspicious</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" className="justify-start"><CalendarDays className="h-4 w-4" /> Jul 1 - Jul 7, 2026</Button>
-            <Button variant="outline" size="icon" aria-label="More filters"><SlidersHorizontal className="h-4 w-4" /></Button>
           </div>
           <div className="overflow-x-auto rounded-2xl border border-border">
             <Table>
-              <TableHeader><TableRow><TableHead>Image</TableHead><TableHead>Result</TableHead><TableHead>Confidence</TableHead><TableHead>Model</TableHead><TableHead>Pharmacist</TableHead><TableHead>Date and Time</TableHead><TableHead>Action</TableHead></TableRow></TableHeader>
+              <TableHeader><TableRow><TableHead>Medicine / Scan</TableHead><TableHead>Result</TableHead><TableHead>Confidence</TableHead><TableHead>Pharmacist</TableHead><TableHead>Scanned</TableHead><TableHead>Review</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
               <TableBody>
                 {isLoading && (
                   <TableRow>
@@ -67,20 +67,16 @@ export function HistoryPage() {
                   <TableRow key={scan.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        {scan.imageDataUrl ? (
-                          <img src={scan.imageDataUrl} alt="" className="h-12 w-16 rounded-lg border border-border object-cover" />
-                        ) : (
-                          <span className="grid h-12 w-16 place-items-center rounded-lg border border-border bg-blue-50 text-xs font-bold text-primary">{scan.medicine.slice(0, 2).toUpperCase()}</span>
-                        )}
-                        <div><strong className="block">{scan.medicine}</strong><span className="text-xs text-muted-foreground">{scan.imageLabel}</span></div>
+                        <MedicineScanImage scanId={scan.id} hasImage={scan.hasImage} alt={`${scan.medicine} uploaded package`} className="h-14 w-14 shrink-0 border border-border" onOpen={() => setSelectedScan(scan)} />
+                        <div className="min-w-0"><strong className="block truncate">{scan.medicine}</strong><span className="block text-xs font-semibold text-primary">{scan.id}</span><span className="block max-w-[180px] truncate text-xs text-muted-foreground" title={scan.imageLabel}>{scan.imageLabel}</span></div>
                       </div>
                     </TableCell>
                     <TableCell><StatusBadge status={scan.result} /></TableCell>
                     <TableCell className="min-w-40"><ConfidenceProgress value={scan.confidence} status={scan.result} /></TableCell>
-                    <TableCell>{scan.model}</TableCell>
                     <TableCell>{scan.pharmacist}</TableCell>
-                    <TableCell>{scan.dateTime}</TableCell>
-                    <TableCell><Button variant="outline" size="sm" onClick={() => setSelectedScan(scan)}>View</Button></TableCell>
+                    <TableCell className="whitespace-nowrap text-sm">{formatDateTime(scan.createdAt || scan.dateTime)}</TableCell>
+                    <TableCell className="text-sm">{scan.reviewStatus}</TableCell>
+                    <TableCell className="text-right"><Button variant="outline" size="sm" onClick={() => setSelectedScan(scan)}>View details</Button></TableCell>
                   </TableRow>
                 ))}
                 {!isLoading && !error && filtered.length === 0 && (
@@ -97,15 +93,12 @@ export function HistoryPage() {
               </TableBody>
             </Table>
           </div>
-          <div className="mt-5 flex items-center justify-between text-sm text-muted-foreground">
-            <span>Showing {filtered.length} of {scanHistory.length} records</span>
-            <div className="flex items-center gap-2"><Button variant="outline" size="icon"><ChevronLeft className="h-4 w-4" /></Button><Button variant="outline" size="sm">1</Button><Button variant="outline" size="icon"><ChevronRight className="h-4 w-4" /></Button></div>
-          </div>
+          <p className="mt-4 text-sm text-muted-foreground">Showing {filtered.length} of {scanHistory.length} records</p>
         </CardContent>
       </Card>
       <Dialog open={Boolean(selectedScan)} onOpenChange={(open) => !open && setSelectedScan(null)}>
         {selectedScan && (
-          <DialogContent>
+          <DialogContent className="w-[min(94vw,920px)] max-w-none">
             <DialogHeader>
               <DialogTitle>{selectedScan.id}</DialogTitle>
               <DialogDescription>{selectedScan.medicine} scan details.</DialogDescription>
@@ -120,20 +113,20 @@ export function HistoryPage() {
 
 function ScanDetail({ scan }: { scan: ScanRecord }) {
   return (
-      <div className="grid gap-4">
-      {scan.imageDataUrl ? (
-        <img src={scan.imageDataUrl} alt="" className="h-56 w-full rounded-2xl border border-border object-contain bg-slate-50" />
-      ) : (
-        <div className="grid h-36 place-items-center rounded-2xl border border-border bg-blue-50 text-2xl font-black text-primary">{scan.medicine}</div>
-      )}
-      <div className="grid gap-3 sm:grid-cols-2">
+    <div className="grid gap-5 md:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.1fr)]">
+      <div>
+        <MedicineScanImage scanId={scan.id} hasImage={scan.hasImage} alt={`${scan.medicine} uploaded package`} className="h-[320px] w-full border border-border bg-slate-50 [&_img]:object-contain" />
+        <p className="mt-2 truncate text-xs text-muted-foreground" title={scan.imageLabel}><strong>Original file:</strong> {scan.imageLabel}</p>
+      </div>
+      <div className="grid content-start gap-3 sm:grid-cols-2">
+        <Detail label="Scan ID" value={scan.id} />
         <Detail label="Prediction" value={scan.result} />
         <Detail label="Model Prediction" value={scan.modelPrediction} />
         <Detail label="Confidence" value={`${(scan.confidence * 100).toFixed(1)}%`} />
         <Detail label="Fake Score" value={`${(scan.fakeScore * 100).toFixed(1)}%`} />
         <Detail label="Real Score" value={`${(scan.realScore * 100).toFixed(1)}%`} />
         <Detail label="Pharmacist" value={scan.pharmacist} />
-        <Detail label="Date and Time" value={scan.dateTime} />
+        <Detail label="Scanned at" value={formatDateTime(scan.createdAt || scan.dateTime)} />
         <Detail label="Review Status" value={scan.reviewStatus} />
       </div>
     </div>

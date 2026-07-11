@@ -1,13 +1,14 @@
 # Supabase setup
 
 1. Create a Supabase project.
-2. Open the Supabase SQL editor and run `supabase/schema.sql`.
+2. For a new project, run `supabase/schema.sql`. For an existing project, run migrations in `supabase/migrations/` in filename order.
 3. Copy `backend/.env.example` to `backend/.env`.
 4. Set:
 
 ```env
 SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+SCAN_IMAGE_BUCKET=medicine-scans
 ```
 
 Keep `SUPABASE_SERVICE_ROLE_KEY` only in the backend environment. Do not expose it in the React frontend.
@@ -46,3 +47,5 @@ The app now stores scan history and risk reports through FastAPI endpoints backe
 - `PATCH /reports/{report_id}`
 
 These database endpoints require a valid Supabase Auth access token from the frontend.
+
+Scan images are stored in the private `medicine-scans` Storage bucket. The frontend receives short-lived signed URLs only after the backend verifies Admin access or Pharmacist ownership.

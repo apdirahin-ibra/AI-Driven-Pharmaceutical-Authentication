@@ -14,7 +14,7 @@ export function filterScansByRange(scans: ScanRecord[], range: TimeRange): ScanR
   const start = new Date();
   start.setHours(0, 0, 0, 0);
   if (range === "week") start.setDate(start.getDate() - 6);
-  return scans.filter((scan) => new Date(scan.dateTime) >= start);
+  return scans.filter((scan) => new Date(scan.createdAt || scan.dateTime) >= start);
 }
 
 export function buildSparklinePath(values: number[]): string {
@@ -43,7 +43,7 @@ export function buildMetricTrend(
   now.setHours(23, 59, 59, 999);
 
   scans.filter(predicate).forEach((scan) => {
-    const dayDiff = Math.floor((now.getTime() - new Date(scan.dateTime).getTime()) / 86_400_000);
+    const dayDiff = Math.floor((now.getTime() - new Date(scan.createdAt || scan.dateTime).getTime()) / 86_400_000);
     if (dayDiff >= 0 && dayDiff < buckets) counts[buckets - 1 - dayDiff] += 1;
   });
 

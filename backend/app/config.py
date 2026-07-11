@@ -35,6 +35,7 @@ class Settings:
     validator_timeout_seconds: float
     supabase_url: str | None
     supabase_service_role_key: str | None
+    scan_image_bucket: str
     frontend_origins: tuple[str, ...]
 
 
@@ -71,6 +72,7 @@ def get_settings() -> Settings:
         clean_secret_env("SUPABASE_SERVICE_ROLE_KEY")
         or clean_secret_env("SUPABASE_KEY")
     )
+    scan_image_bucket = clean_env("SCAN_IMAGE_BUCKET", "medicine-scans") or "medicine-scans"
     frontend_origins = tuple(
         origin.strip().rstrip("/")
         for origin in (clean_env(
@@ -90,5 +92,6 @@ def get_settings() -> Settings:
         validator_timeout_seconds,
         supabase_url.rstrip("/") if supabase_url else None,
         supabase_service_role_key,
+        scan_image_bucket,
         frontend_origins,
     )
