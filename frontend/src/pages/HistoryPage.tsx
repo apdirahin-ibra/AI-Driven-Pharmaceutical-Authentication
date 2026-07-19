@@ -88,7 +88,7 @@ export function HistoryPage() {
           </div>
           <div className="overflow-x-auto rounded-2xl border border-border">
             <Table>
-              <TableHeader><TableRow><TableHead>Medicine / Scan</TableHead><TableHead>Result</TableHead><TableHead>Confidence</TableHead><TableHead>Pharmacist</TableHead><TableHead>Scanned</TableHead><TableHead>Review</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
+              <TableHeader><TableRow><TableHead>Medicine / Scan</TableHead><TableHead>Result</TableHead><TableHead>Confidence</TableHead><TableHead>Pharmacist</TableHead><TableHead>Scanned</TableHead><TableHead>Review</TableHead><TableHead className="w-[148px] whitespace-nowrap text-right">Action</TableHead></TableRow></TableHeader>
               <TableBody>
                 {isLoading && (
                   <TableRow>
@@ -108,17 +108,19 @@ export function HistoryPage() {
                     <TableCell>{scan.pharmacist}</TableCell>
                     <TableCell className="whitespace-nowrap text-sm">{formatDateTime(scan.createdAt || scan.dateTime)}</TableCell>
                     <TableCell className="text-sm">{scan.reviewStatus}</TableCell>
-                    <TableCell>
+                    <TableCell className="w-[148px] whitespace-nowrap">
                       <div className="flex justify-end gap-2">
                         <Button variant="outline" size="sm" onClick={() => setSelectedScan(scan)}>View details</Button>
                         <Button
                           variant="destructive"
-                          size="sm"
+                          size="icon"
+                          className="h-9 w-9 shrink-0 rounded-xl"
                           disabled={deletingId === scan.id}
                           onClick={() => removeScan(scan)}
+                          aria-label={deletingId === scan.id ? `Deleting ${scan.id}` : `Delete ${scan.id}`}
+                          title={deletingId === scan.id ? "Deleting scan" : "Delete scan"}
                         >
                           <Trash2 className="h-4 w-4" />
-                          {deletingId === scan.id ? "Deleting..." : "Delete"}
                         </Button>
                       </div>
                     </TableCell>
