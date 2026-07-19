@@ -24,6 +24,11 @@ export async function getRiskReports(): Promise<RiskReport[]> {
   return response.data;
 }
 
+export async function deleteScanRecord(scanId: string): Promise<void> {
+  await apiClient.delete(`/scans/${encodeURIComponent(scanId)}`, { timeout: DATABASE_TIMEOUT_MS });
+  notifyRecordsChanged();
+}
+
 export async function getScanImageReference(scanId: string): Promise<ScanImageReference> {
   const response = await apiClient.get<ScanImageReference>(`/scans/${encodeURIComponent(scanId)}/image-url`, {
     timeout: DATABASE_TIMEOUT_MS,

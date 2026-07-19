@@ -266,6 +266,30 @@ async def create_scan(request: NewScanRequest, user: AuthenticatedUser = Depends
         raise records_error(exc) from exc
 
 
+@app.delete("/scans/{scan_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_scan(scan_id: str, user: AuthenticatedUser = Depends(get_current_user)) -> None:
+    try:
+        await run_in_threadpool(
+            record_store.delete_scan,
+            scan_id,
+            user.id,
+            user.name,
+            user.role == "Admin",
+        )
+    except PermissionError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={"code": "SCAN_DELETE_DENIED", "message": str(exc), "retryable": False},
+        ) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "SCAN_NOT_FOUND", "message": str(exc), "retryable": False},
+        ) from exc
+    except (SupabaseNotConfiguredError, SupabaseRecordsError) as exc:
+        raise records_error(exc) from exc
+
+
 @app.get("/reports")
 async def list_reports(user: AuthenticatedUser = Depends(get_current_user)) -> list[dict]:
     try:

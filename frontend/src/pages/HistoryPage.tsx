@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { AxiosError } from "axios";
+import { Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -13,6 +14,7 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ConfidenceProgress } from "@/components/shared/ConfidenceProgress";
 import { MedicineScanImage } from "@/components/shared/MedicineScanImage";
 import { useScanRecords } from "@/hooks/useRecords";
+import { deleteScanRecord } from "@/api/records";
 import { formatDateTime } from "@/lib/utils";
 import type { PredictionStatus, ScanRecord } from "@/types/domain";
 
@@ -21,12 +23,40 @@ export function HistoryPage() {
   const [query, setQuery] = useState("");
   const [resultFilter, setResultFilter] = useState<"All" | PredictionStatus>("All");
   const [selectedScan, setSelectedScan] = useState<ScanRecord | null>(null);
+  const [deletingId, setDeletingId] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [actionMessage, setActionMessage] = useState("");
 
   const filtered = useMemo(() => scanHistory.filter((scan) => {
     const matchesQuery = `${scan.id} ${scan.medicine} ${scan.imageLabel}`.toLowerCase().includes(query.toLowerCase());
     const matchesResult = resultFilter === "All" || scan.result === resultFilter;
     return matchesQuery && matchesResult;
   }), [scanHistory, query, resultFilter]);
+
+  const removeScan = async (scan: ScanRecord) => {
+    const confirmed = window.confirm(
+      `Delete ${scan.id}? This permanently removes the scan, its linked risk report, and uploaded image.`,
+    );
+    if (!confirmed) return;
+
+    setDeletingId(scan.id);
+    setActionError("");
+    setActionMessage("");
+    try {
+      await deleteScanRecord(scan.id);
+      if (selectedScan?.id === scan.id) setSelectedScan(null);
+      setActionMessage(`${scan.id} was deleted.`);
+    } catch (caughtError) {
+      const detail = caughtError instanceof AxiosError ? caughtError.response?.data?.detail : null;
+      setActionError(
+        typeof detail?.message === "string"
+          ? detail.message
+          : "The scan could not be deleted. Check your connection and try again.",
+      );
+    } finally {
+      setDeletingId("");
+    }
+  };
 
   return (
     <div>
@@ -39,6 +69,8 @@ export function HistoryPage() {
         <CardHeader><CardTitle>Scan History</CardTitle></CardHeader>
         <CardContent>
           {error && <Alert variant="destructive" className="mb-5"><AlertDescription>{error}</AlertDescription></Alert>}
+          {actionError && <Alert variant="destructive" className="mb-5"><AlertDescription>{actionError}</AlertDescription></Alert>}
+          {actionMessage && <Alert className="mb-5"><AlertDescription>{actionMessage}</AlertDescription></Alert>}
           <div className="mb-5 grid gap-3 md:grid-cols-[1fr_190px]">
             <div className="relative">
               <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -76,7 +108,20 @@ export function HistoryPage() {
                     <TableCell>{scan.pharmacist}</TableCell>
                     <TableCell className="whitespace-nowrap text-sm">{formatDateTime(scan.createdAt || scan.dateTime)}</TableCell>
                     <TableCell className="text-sm">{scan.reviewStatus}</TableCell>
-                    <TableCell className="text-right"><Button variant="outline" size="sm" onClick={() => setSelectedScan(scan)}>View details</Button></TableCell>
+                    <TableCell>
+                      <div className="flex justify-end gap-2">
+                        <Button variant="outline" size="sm" onClick={() => setSelectedScan(scan)}>View details</Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          disabled={deletingId === scan.id}
+                          onClick={() => removeScan(scan)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          {deletingId === scan.id ? "Deleting..." : "Delete"}
+                        </Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {!isLoading && !error && filtered.length === 0 && (

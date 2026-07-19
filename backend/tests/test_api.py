@@ -198,6 +198,45 @@ def test_pharmacist_scan_list_is_owner_scoped(monkeypatch) -> None:
     assert received == {"user_id": PHARMACIST.id, "user_name": PHARMACIST.name, "is_admin": False}
 
 
+def test_admin_can_delete_scan(monkeypatch) -> None:
+    app.dependency_overrides[get_current_user] = lambda: ADMIN
+    received = {}
+
+    def delete_scan(scan_id, user_id, user_name, is_admin):
+        received.update(
+            {
+                "scan_id": scan_id,
+                "user_id": user_id,
+                "user_name": user_name,
+                "is_admin": is_admin,
+            }
+        )
+
+    monkeypatch.setattr(main_module.record_store, "delete_scan", delete_scan)
+    response = client.delete("/scans/PG-2607-ABC123")
+
+    assert response.status_code == 204
+    assert received == {
+        "scan_id": "PG-2607-ABC123",
+        "user_id": ADMIN.id,
+        "user_name": ADMIN.name,
+        "is_admin": True,
+    }
+
+
+def test_scan_delete_permission_error_is_structured(monkeypatch) -> None:
+    app.dependency_overrides[get_current_user] = lambda: PHARMACIST
+
+    def delete_scan(*_):
+        raise PermissionError("You can delete only scans that belong to your account.")
+
+    monkeypatch.setattr(main_module.record_store, "delete_scan", delete_scan)
+    response = client.delete("/scans/PG-OTHER")
+
+    assert response.status_code == 403
+    assert response.json()["detail"]["code"] == "SCAN_DELETE_DENIED"
+
+
 def test_pharmacist_cannot_update_risk_report() -> None:
     app.dependency_overrides[get_current_user] = lambda: PHARMACIST
     response = client.patch("/reports/RISK-1", json={"status": "Resolved", "notes": "Blocked"})

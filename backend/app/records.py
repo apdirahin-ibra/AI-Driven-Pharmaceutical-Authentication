@@ -191,6 +191,37 @@ class SupabaseRecordStore:
             raise FileNotFoundError("No uploaded image is available for this scan.")
         return {"url": url, "originalFileName": row.get("image_label") or "medicine-image"}
 
+    def delete_scan(self, scan_id: str, user_id: str, user_name: str, is_admin: bool) -> None:
+        rows = self._request(
+            "GET",
+            "/scan_records",
+            params={"select": IMAGE_COLUMNS, "id": f"eq.{scan_id}", "limit": "1"},
+        )
+        if not rows:
+            raise FileNotFoundError("The requested scan was not found.")
+
+        scan = rows[0]
+        if not is_admin and not owns_record(scan, user_id, user_name):
+            raise PermissionError("You can delete only scans that belong to your account.")
+
+        deleted = self._request(
+            "DELETE",
+            "/scan_records",
+            params={"id": f"eq.{scan_id}"},
+            prefer_return=True,
+        )
+        if not deleted:
+            raise SupabaseRecordsError("The scan could not be deleted from the database.")
+
+        if scan.get("image_bucket") and scan.get("image_path"):
+            try:
+                self._storage_request(
+                    "DELETE",
+                    f"/object/{quote(scan['image_bucket'], safe='')}/{quote(scan['image_path'], safe='/')}",
+                )
+            except (SupabaseNotConfiguredError, SupabaseRecordsError):
+                logger.exception("Scan %s was deleted, but its Storage object could not be removed.", scan_id)
+
     def upload_scan_image(self, scan_id: str, pharmacist_id: str, file_name: str, data_url: str, now: datetime) -> tuple[str, str]:
         match = DATA_URL_PATTERN.match(data_url)
         if not match:
